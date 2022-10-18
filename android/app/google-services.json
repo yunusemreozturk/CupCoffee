@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "492969056564",
+    "project_id": "cupcoffee-f39e6",
+    "storage_bucket": "cupcoffee-f39e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492969056564:android:372bec2e119b19b7a52d61",
+        "android_client_info": {
+          "package_name": "com.turkticaret.cupcoffee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492969056564-6apa7da9kf2sa5nqturene1mu5pi5mt8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfP-ggGpeKVdyRSf3YH4ZMz0gtsaDUsBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492969056564-6apa7da9kf2sa5nqturene1mu5pi5mt8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "492969056564-69j1bqdr7bk7cpbp7t4nfof2mjfcda7d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.turkticaret.cupcoffee.cupcoffee"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492969056564:android:9258cb063c70a5f2a52d61",
+        "android_client_info": {
+          "package_name": "com.turkticaret.cupcoffee.cupcoffee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492969056564-6apa7da9kf2sa5nqturene1mu5pi5mt8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfP-ggGpeKVdyRSf3YH4ZMz0gtsaDUsBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492969056564-6apa7da9kf2sa5nqturene1mu5pi5mt8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "492969056564-69j1bqdr7bk7cpbp7t4nfof2mjfcda7d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.turkticaret.cupcoffee.cupcoffee"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

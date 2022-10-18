@@ -1,4 +1,4 @@
-package com.turkticaret.cupcoffee.cupcoffee
+package com.turkticaret.cupcoffee
 
 import io.flutter.embedding.android.FlutterActivity
 
