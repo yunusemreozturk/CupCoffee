@@ -1,4 +1,5 @@
 import 'package:cupcoffee/src/view/loading_page.dart';
+import 'package:cupcoffee/src/view/map_sample.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Cup Coffee',
       debugShowCheckedModeBanner: false,
       theme: themeData,
+      // home: MapSample(),
       home: FutureBuilder(
         future: _viewModel.onStart(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

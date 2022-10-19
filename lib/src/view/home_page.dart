@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/view/product_detail.dart';
+import 'package:cupcoffee/src/view/shop_details.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +142,7 @@ class HomePage extends StatelessWidget {
                     children: [
                       Stack(
                         children: [
-                          Container(
+                          SizedBox(
                             height: Get.height * .25,
                             child: CachedNetworkImage(
                               imageUrl: product.photo!,
@@ -203,15 +204,15 @@ class HomePage extends StatelessWidget {
                               margin: const EdgeInsets.all(5),
                               child: Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.access_time_outlined,
                                     color: Colors.white,
                                     size: 19,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     '${product.deliveryTime} min delivery',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600),
                                   ),
@@ -254,7 +255,7 @@ class HomePage extends StatelessWidget {
                               children: [
                                 Text(
                                   product.name!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -262,7 +263,7 @@ class HomePage extends StatelessWidget {
                                 ),
                                 Text(
                                   product.price.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -278,7 +279,7 @@ class HomePage extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               CustomIcons.map_pin,
                               size: 16,
                             ),
@@ -330,78 +331,86 @@ class HomePage extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               ShopModel shop = _viewModel.shopsModel.shops![index];
 
-              return Container(
-                height: Get.height * .25,
-                width: Get.width * .46,
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          height: Get.height * .17,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: CachedNetworkImage(
-                            imageUrl: shop.photo!,
-                            imageBuilder: (context, imageProvider) => Container(
-                              //todo: lokasyon uzaklığını al
-                              width: Get.width * .45,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
+              return Bounceable(
+                onTap: () {
+                  Get.to(() => ShopDetails(shopModel: shop));
+                },
+                child: Container(
+                  height: Get.height * .25,
+                  width: Get.width * .46,
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            height: Get.height * .17,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: CachedNetworkImage(
+                              imageUrl: shop.photo!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                //todo: lokasyon uzaklığını al
+                                width: Get.width * .45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
-                            ),
-                            placeholder: (context, url) => Center(
-                              child: SpinKitThreeBounce(
-                                size: 50,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: index.isEven
-                                          ? Colors.white
-                                          : Colors.brown,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  );
-                                },
+                              placeholder: (context, url) => Center(
+                                child: SpinKitThreeBounce(
+                                  size: 50,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: index.isEven
+                                            ? Colors.white
+                                            : Colors.brown,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Row(
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Row(
+                              children: [
+                                Text(
+                                  shop.name!,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
                             children: [
-                              Text(
-                                shop.name!,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 17),
+                              const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                                size: 20,
                               ),
+                              const SizedBox(width: 4),
+                              Text('${shop.star} ratings')
                             ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 20,
-                            ),
-                            SizedBox(width: 4),
-                            Text('${shop.star} ratings')
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
