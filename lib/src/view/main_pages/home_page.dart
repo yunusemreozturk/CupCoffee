@@ -12,9 +12,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../config/custom_icons_icons.dart';
-import '../config/theme.dart';
-import '../models/products_model.dart';
+import '../../config/custom_icons_icons.dart';
+import '../../config/theme.dart';
+import '../../models/products_model.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -106,38 +106,34 @@ class HomePage extends StatelessWidget {
 
   CircleAvatar profilePicture() {
     return CircleAvatar(
-                  radius: 35,
-                  child: CachedNetworkImage(
-                    imageUrl: _viewModel.userModel.photoUrl!,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    placeholder: (context, url) => Center(
-                      child: SpinKitThreeBounce(
-                        size: 50,
-                        itemBuilder:
-                            (BuildContext context, int index) {
-                          return DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: index.isEven
-                                  ? Colors.white
-                                  : Colors.brown,
-                              shape: BoxShape.circle,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    errorWidget: (context, url, error) =>
-                    const Icon(Icons.error),
-                  ),
-                );
+      radius: 35,
+      child: CachedNetworkImage(
+        imageUrl: _viewModel.userModel.photoUrl!,
+        imageBuilder: (context, imageProvider) => Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        placeholder: (context, url) => Center(
+          child: SpinKitThreeBounce(
+            size: 40,
+            itemBuilder: (BuildContext context, int index) {
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  color: index.isEven ? Colors.white : Colors.brown,
+                  shape: BoxShape.circle,
+                ),
+              );
+            },
+          ),
+        ),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
+    );
   }
 
   Column popularCoffee() {

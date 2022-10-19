@@ -20,9 +20,9 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
@@ -200,10 +200,16 @@ class ProductDetail extends StatelessWidget {
   Bounceable addToCard() {
     return Bounceable(
       onTap: () async {
-        await _viewModel.addToCard(
+        await _viewModel.addToBasket(
           productAmount: productAmount.value,
           productModel: productModel,
           sizeSelect: sizeSelect.value,
+        );
+        Get.snackbar(
+          'Successful',
+          '${productModel.name} Added to Your Cart',
+          backgroundColor: themeData.colorScheme.secondary,
+          colorText: Colors.white,
         );
       },
       child: Container(
@@ -282,7 +288,17 @@ class ProductDetail extends StatelessWidget {
           Expanded(
             child: Bounceable(
               onTap: () {
-                productAmount.value--;
+                if(productAmount.value != 1){
+                  productAmount.value--;
+                } else {
+                  Get.snackbar(
+                    'Warning',
+                    'Amount must be at least 1.',
+                    backgroundColor: themeData.colorScheme.secondary,
+                    colorText: Colors.white,
+                  );
+                }
+
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -315,7 +331,16 @@ class ProductDetail extends StatelessWidget {
           Expanded(
             child: Bounceable(
               onTap: () {
-                productAmount.value++;
+                if (productAmount.value < 10) {
+                  productAmount.value++;
+                } else {
+                  Get.snackbar(
+                    'Warning',
+                    'You can order up to 10.',
+                    backgroundColor: themeData.colorScheme.secondary,
+                    colorText: Colors.white,
+                  );
+                }
               },
               child: Container(
                 decoration: BoxDecoration(

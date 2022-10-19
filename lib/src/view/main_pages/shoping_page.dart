@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/custom_icons_icons.dart';
 import 'package:cupcoffee/src/config/theme.dart';
-import 'package:cupcoffee/src/view/bottom_navigator.dart';
+import 'package:cupcoffee/src/models/products_model.dart';
+import 'package:cupcoffee/src/view/main_pages/bottom_navigator.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +11,24 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
+import '../../models/orders_model.dart';
 import 'home_page.dart';
 
-class ShopingPage extends StatelessWidget {
+class ShopingPage extends StatefulWidget {
   ShopingPage({Key? key}) : super(key: key);
+
+  @override
+  State<ShopingPage> createState() => _ShopingPageState();
+}
+
+class _ShopingPageState extends State<ShopingPage> {
   final FirestoreViewModel _viewModel = Get.find();
+
   int subtotal = 0;
   int discount = 90;
   int delivery = 50;
   int totalPrice = 0;
+  RxBool refresh = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -168,10 +178,8 @@ class ShopingPage extends StatelessWidget {
   Container orders() {
     List<Widget> list = <Widget>[];
 
-    _viewModel.ordersModel.orders.forEach((order) {
+    _viewModel.myBasket!.orders.forEach((order) {
       _viewModel.productsModel.products!.forEach((product) {
-        RxInt productAmount = order.amount!.obs;
-
         if (order.id == product.id) {
           list.add(
             Container(
@@ -233,7 +241,7 @@ class ShopingPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  increaseOrDecreaseAmount(productAmount),
+                  increaseOrDecreaseAmount(order, _viewModel.myBasket!),
                 ],
               ),
             ),
@@ -242,7 +250,7 @@ class ShopingPage extends StatelessWidget {
       });
     });
 
-    if (_viewModel.ordersModel.orders.isEmpty) {
+    if (_viewModel.myBasket!.orders.isEmpty) {
       return Container(
         margin: const EdgeInsets.only(bottom: 10),
         width: Get.width,
@@ -271,11 +279,13 @@ class ShopingPage extends StatelessWidget {
   }
 
   Container calculatePrice() {
-    _viewModel.ordersModel.orders.forEach((element) {
-      subtotal += element.totalPrice!;
+    subtotal = 0;
+    _viewModel.myBasket!.orders.forEach((element) {
+      subtotal += element.price! * element.amount!;
     });
 
     totalPrice = (subtotal == 0) ? 0 : subtotal - discount + delivery;
+
     TextStyle textStyle1 =
         const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     TextStyle textStyle2 =
@@ -299,7 +309,7 @@ class ShopingPage extends StatelessWidget {
                 style: textStyle1,
               ),
               Text(
-                _viewModel.ordersModel.orders.length.toString(),
+                _viewModel.myBasket!.orders.length.toString(),
                 style: textStyle1,
               )
             ],
@@ -391,8 +401,10 @@ class ShopingPage extends StatelessWidget {
     );
   }
 
-  //todo: cleane çek
-  SizedBox increaseOrDecreaseAmount(RxInt productAmount) {
+  SizedBox increaseOrDecreaseAmount(
+    OrderModel order,
+    OrdersModel orders,
+  ) {
     return SizedBox(
       width: 100,
       height: 35,
@@ -400,8 +412,35 @@ class ShopingPage extends StatelessWidget {
         children: [
           Expanded(
             child: Bounceable(
-              onTap: () {
-                productAmount.value--;
+              onTap: () async {
+                if (order.amount != 1) {
+                  order.amount = order.amount! - 1;
+                } else {
+                  List temp = orders.toJson();
+
+                  temp.removeWhere((element) =>
+                      (element['productId'] == order.id &&
+                          element['sizes'] == order.size));
+
+                  _viewModel.userModel.myBasket = OrdersModel.fromMap(temp);
+                  String name = '';
+
+                  _viewModel.productsModel.products!.forEach((element) {
+                    if (order.id == element.id) {
+                      name = element.name!;
+                    }
+                  });
+
+                  Get.snackbar(
+                    'Successful',
+                    '$name Deleted',
+                    backgroundColor: themeData.colorScheme.secondary,
+                    colorText: Colors.white,
+                  );
+                }
+                setState(() {});
+
+                await _viewModel.setUser(_viewModel.userModel);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -422,19 +461,27 @@ class ShopingPage extends StatelessWidget {
           ),
           Expanded(
             child: Center(
-              child: Obx(
-                () => Text(
-                  productAmount.value.toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15),
-                ),
+              child: Text(
+                order.amount.toString(),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
             ),
           ),
           Expanded(
             child: Bounceable(
               onTap: () {
-                productAmount.value++;
+                if (order.amount! < 10) {
+                  order.amount = order.amount! + 1;
+                  setState(() {});
+                } else {
+                  Get.snackbar(
+                    'Warning',
+                    'You can order up to 10.',
+                    backgroundColor: themeData.colorScheme.secondary,
+                    colorText: Colors.white,
+                  );
+                }
               },
               child: Container(
                 decoration: BoxDecoration(

@@ -1,19 +1,19 @@
 import 'package:cupcoffee/src/config/theme.dart';
-import 'package:cupcoffee/src/view/home_page.dart';
-import 'package:cupcoffee/src/view/map_page.dart';
-import 'package:cupcoffee/src/view/my_favorites_page.dart';
-import 'package:cupcoffee/src/view/order_confirmed.dart';
-import 'package:cupcoffee/src/view/order_processing.dart';
-import 'package:cupcoffee/src/view/shoping_page.dart';
-import 'package:cupcoffee/src/view/user_info_page.dart';
+import 'package:cupcoffee/src/view/main_pages/home_page.dart';
+import 'package:cupcoffee/src/view/main_pages/my_favorites_page.dart';
+import 'package:cupcoffee/src/view/secondary_pages/order_confirmed.dart';
+import 'package:cupcoffee/src/view/secondary_pages/order_processing.dart';
+import 'package:cupcoffee/src/view/main_pages/shoping_page.dart';
+import 'package:cupcoffee/src/view/main_pages/user_info_page.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import '../config/custom_icons_icons.dart';
-import 'loading_page.dart';
+import '../../config/custom_icons_icons.dart';
+import '../secondary_pages/loading_page.dart';
+import 'map_page.dart';
 
 class BottomNavigator extends StatelessWidget {
   BottomNavigator({Key? key}) : super(key: key);

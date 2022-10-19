@@ -19,12 +19,26 @@ class FirestoreService {
   }
 
   @override
-  Future<UserModel> getUser() async {
+  Future<UserModel?> getUser() async {
     try {
-      return UserModel.fromMap(
+      return UserModel.fromJson(
           await _firestore.collection('users').doc('si0PVF7DXKklNExU1dDY').get());
     } catch (e) {
       print('Error: FirestoreService(getProducts): ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<UserModel> setUser(UserModel userModel) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('si0PVF7DXKklNExU1dDY')
+          .set(userModel.toJson());
+
+      return userModel;
+    } catch (e) {
+      print('Error: FirestoreService(setUser): ${e.toString()}');
       return UserModel();
     }
   }
@@ -37,20 +51,6 @@ class FirestoreService {
     } catch (e) {
       print('Error: FirestoreService(getShops): ${e.toString()}');
       return ShopsModel();
-    }
-  }
-
-  @override
-  Future setProducts(ProductsModel productsModel) async {
-    try {
-      await _firestore
-          .collection('products')
-          .doc('tr')
-          .set(productsModel.toJson());
-
-    } catch (e) {
-      print('Error: FirestoreService(setProducts): ${e.toString()}');
-      return ProductsModel();
     }
   }
 }

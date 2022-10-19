@@ -3,7 +3,8 @@ import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/repository/firestore_repository.dart';
 import 'package:cupcoffee/src/service/firestore_service.dart';
-import 'package:cupcoffee/src/view/bottom_navigator.dart';
+import 'package:cupcoffee/src/view/main_pages/bottom_navigator.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -14,13 +15,11 @@ enum FirestoreViewModelState { idle, busy }
 
 enum Paying { idle, processing, confirmed, error }
 
-//todo: hata yakalamaları yap
 class FirestoreViewModel {
   final FirestoreRepository _repository = Get.find();
 
   Rx<ProductsModel> _productsModel = ProductsModel().obs;
   Rx<ShopsModel> _shopsModel = ShopsModel().obs;
-  Rx<OrdersModel> _ordersModel = OrdersModel(orders: []).obs;
   Rx<UserModel> _userModel = UserModel().obs;
 
   Rx<FirestoreViewModelState> _state = FirestoreViewModelState.idle.obs;
@@ -30,7 +29,9 @@ class FirestoreViewModel {
 
   ShopsModel get shopsModel => _shopsModel.value;
 
-  OrdersModel get ordersModel => _ordersModel.value;
+  OrdersModel? get myBasket => _userModel.value.myBasket;
+
+  OrdersModel? get orders => _userModel.value.orders;
 
   UserModel get userModel => _userModel.value;
 
@@ -65,7 +66,7 @@ class FirestoreViewModel {
   Future<UserModel> getUser() async {
     try {
       _state.value = FirestoreViewModelState.busy;
-      _userModel.value = await _repository.getUser();
+      _userModel.value = (await _repository.getUser())!;
 
       return _userModel.value;
     } finally {
@@ -84,7 +85,7 @@ class FirestoreViewModel {
     }
   }
 
-  Future addToCard({
+  Future addToBasket({
     required ProductModel productModel,
     required int productAmount,
     required int sizeSelect,
@@ -92,19 +93,19 @@ class FirestoreViewModel {
     try {
       _state.value = FirestoreViewModelState.busy;
 
-      if (ordersModel.orders.isEmpty) {
-        ordersModel.orders.add(
+      if (myBasket!.orders.isEmpty) {
+        myBasket!.orders.add(
           OrderModel(
             id: productModel.id,
             amount: productAmount,
             size: productModel.sizes![sizeSelect],
-            totalPrice: productModel.price! * productAmount,
+            price: productModel.price,
           ),
         );
       } else {
         bool tempBool = false;
 
-        for (var map in ordersModel.orders) {
+        for (var map in myBasket!.orders) {
           if (map.toJson()['productId'] == productModel.id &&
               map.toJson()['sizes'] == productModel.sizes![sizeSelect]) {
             tempBool = true;
@@ -112,43 +113,62 @@ class FirestoreViewModel {
         }
 
         if (tempBool) {
-          ordersModel.orders.forEach((element) {
+          myBasket!.orders.forEach((element) {
             if (element.id == productModel.id &&
                 element.size == productModel.sizes![sizeSelect]) {
               int temp = element.amount!;
               temp += productAmount;
-              element.totalPrice = temp * productModel.price!;
               element.amount = temp;
             }
           });
         } else {
-          ordersModel.orders.add(
+          myBasket!.orders.add(
             OrderModel(
               id: productModel.id,
               amount: productAmount,
               size: productModel.sizes![sizeSelect],
-              totalPrice: productModel.price! * productAmount,
+              price: productModel.price,
             ),
           );
         }
       }
     } finally {
       _state.value = FirestoreViewModelState.idle;
+      await setUser(userModel);
     }
   }
 
-  payNow(context) async {
+  Future<void> payNow(context) async {
     try {
       Get.back();
       _payingState.value = Paying.processing;
-      await Future.delayed(const Duration(seconds: 2));
+
+      userModel.myBasket!.orders.forEach((element) {
+        int credit = userModel.credit!;
+        credit -= element.price! * element.amount!;
+        userModel.credit = credit;
+      });
+      userModel.myBasket!.orders.forEach((element) {
+        userModel.orders!.orders.add(element);
+      });
+
+      userModel.myBasket = OrdersModel(orders: []);
+
+      await setUser(userModel);
+      await Future.delayed(const Duration(seconds: 1));
     } finally {
       _payingState.value = Paying.confirmed;
     }
   }
 
-  setProducts() async {
-    final FirestoreService _service = Get.find();
-    await _service.setProducts(_productsModel.value);
+  Future<UserModel> setUser(UserModel userModel) async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      _userModel.value = await _repository.setUser(userModel);
+
+      return _userModel.value;
+    } finally {
+      _state.value = FirestoreViewModelState.busy;
+    }
   }
 }

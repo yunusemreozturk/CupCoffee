@@ -1,10 +1,10 @@
 import 'package:cupcoffee/src/config/theme.dart';
-import 'package:cupcoffee/src/view/bottom_navigator.dart';
+import 'package:cupcoffee/src/view/main_pages/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../viewmodel/firestore_viewmodel.dart';
+import '../../viewmodel/firestore_viewmodel.dart';
 
 class OrderConfirmed extends StatelessWidget {
   const OrderConfirmed({Key? key}) : super(key: key);

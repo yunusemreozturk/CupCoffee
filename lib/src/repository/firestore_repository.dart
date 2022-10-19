@@ -16,7 +16,11 @@ class FirestoreRepository {
     return await _service.getShops();
   }
 
-  Future<UserModel> getUser()async  {
+  Future<UserModel?> getUser()async  {
     return await _service.getUser();
+  }
+
+  Future<UserModel> setUser(UserModel userModel)async  {
+    return await _service.setUser(userModel);
   }
 }
