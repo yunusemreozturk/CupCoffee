@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
+import 'package:cupcoffee/src/view/product_detail.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -121,160 +123,171 @@ class HomePage extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               ProductModel product = _viewModel.productsModel.products![index];
 
-              return Container(
-                height: Get.height * .35,
-                width: Get.width * .7,
-                padding: const EdgeInsets.only(right: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: Get.height * .25,
-                          child: CachedNetworkImage(
-                            imageUrl: product.photo!,
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: Get.width * .65,
+              return Bounceable(
+                onTap: () {
+                  Get.to(
+                    () => ProductDetail(productModel: product),
+                    transition: Transition.downToUp,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                },
+                child: Container(
+                  height: Get.height * .35,
+                  width: Get.width * .7,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            height: Get.height * .25,
+                            child: CachedNetworkImage(
+                              imageUrl: product.photo!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                width: Get.width * .65,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Center(
+                                child: SpinKitThreeBounce(
+                                  size: 50,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: index.isEven
+                                            ? Colors.white
+                                            : Colors.brown,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
-                                ),
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(.5),
                               ),
-                            ),
-                            placeholder: (context, url) => Center(
-                              child: SpinKitThreeBounce(
-                                size: 50,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color: index.isEven
-                                          ? Colors.white
-                                          : Colors.brown,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            margin: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(.5),
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                                size: 25,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 4,
-                          child: Container(
-                            margin: const EdgeInsets.all(5),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.access_time_outlined,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.favorite_border,
                                   color: Colors.white,
-                                  size: 19,
+                                  size: 25,
                                 ),
-                                SizedBox(width: 5),
-                                Text(
-                                  '${product.deliveryTime} min delivery',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 4,
-                          child: Container(
-                            margin: const EdgeInsets.all(5),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 19,
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
-                                  product.star.toString(),
-                                  style: const TextStyle(
+                          Positioned(
+                            bottom: 0,
+                            left: 4,
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_time_outlined,
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w600,
+                                    size: 19,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    '${product.deliveryTime} min delivery',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 4,
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 19,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    product.star.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  product.name!,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  product.price.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                product.name!,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Text(
-                                product.price.toString(),
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            CustomIcons.map_pin,
-                            size: 16,
-                          ),
-                          Text(product.location!),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CustomIcons.map_pin,
+                              size: 16,
+                            ),
+                            Text(product.location!),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

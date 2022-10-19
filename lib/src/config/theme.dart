@@ -71,6 +71,19 @@ final ThemeData themeData = ThemeData(
       brightness: Brightness.light,
     ),
   ),
+  colorScheme: const ColorScheme(
+    primary: Color(0xff314e45),
+    secondary: Color(0xffFFB067),
+    surface: Color(0xffffffff),
+    background: Color(0xffc0d8d0),
+    error: Color(0xffd32f2f),
+    onPrimary: Color(0xffffffff),
+    onSecondary: Color(0xffFFB067),
+    onSurface: Color(0xff000000),
+    onBackground: Color(0xffffffff),
+    onError: Color(0xffffffff),
+    brightness: Brightness.light,
+  ),
   inputDecorationTheme: const InputDecorationTheme(
     labelStyle: TextStyle(
       color: Color(0xff000000),
