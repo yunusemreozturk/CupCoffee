@@ -302,7 +302,7 @@ class HomePage extends StatelessWidget {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: const [
             Text(
               'Nearest coffee shops',
               style: TextStyle(

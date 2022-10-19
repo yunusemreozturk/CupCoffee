@@ -35,7 +35,7 @@ class ProductsModel {
 }
 
 class ProductModel {
-  int? productId;
+  int? id;
   String? name;
   String? description;
   String? photo;
@@ -46,7 +46,7 @@ class ProductModel {
   String? location;
 
   ProductModel.fromJson(Map<String, dynamic> json) {
-    productId = json['productId']?.toInt();
+    id = json['productId']?.toInt();
     name = json['name']?.toString();
     description = json['description'];
     photo = json['photo']?.toString();
@@ -59,7 +59,7 @@ class ProductModel {
 
   Map<String, dynamic> toJson() {
     return {
-      if (productId != null) 'productId': productId,
+      if (id != null) 'productId': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (photo != null) 'photo': photo,

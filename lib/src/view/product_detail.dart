@@ -199,14 +199,11 @@ class ProductDetail extends StatelessWidget {
 
   Bounceable addToCard() {
     return Bounceable(
-      onTap: () {
-        _viewModel.ordersModel.orders.add(
-          OrderModel(
-            productId: productModel.productId,
-            amount: productAmount.value,
-            sizes: [productModel.sizes![sizeSelect.value]],
-            totalPrice: productModel.price! * productAmount.value,
-          ),
+      onTap: () async {
+        await _viewModel.addToCard(
+          productAmount: productAmount.value,
+          productModel: productModel,
+          sizeSelect: sizeSelect.value,
         );
       },
       child: Container(

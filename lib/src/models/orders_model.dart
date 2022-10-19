@@ -35,25 +35,25 @@ class OrdersModel {
 }
 
 class OrderModel {
-  int? productId;
+  int? id;
   int? amount;
-  List<int>? sizes;
+  int? size;
   int? totalPrice;
 
-  OrderModel({this.productId, this.amount, this.sizes, this.totalPrice});
+  OrderModel({this.id, this.amount, this.size, this.totalPrice});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
-    productId = json['productId']?.toInt();
+    id = json['productId']?.toInt();
     amount = json['amount']?.toInt();
-    sizes = json['sizes'];
+    size = json['sizes'];
     totalPrice = json['totalPrice']?.toInt();
   }
 
   Map<String, dynamic> toJson() {
     return {
-      if (productId != null) 'productId': productId,
+      if (id != null) 'productId': id,
       if (amount != null) 'amount': amount,
-      if (sizes != null) 'sizes': sizes,
+      if (size != null) 'sizes': size,
       if (totalPrice != null) 'totalPrice': totalPrice,
     };
   }

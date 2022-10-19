@@ -35,7 +35,7 @@ class ShopsModel {
 }
 
 class ShopModel {
-  int? shopId;
+  int? id;
   String? name;
   String? description;
   String? photo;
@@ -44,7 +44,7 @@ class ShopModel {
   String? distance;
 
   ShopModel.fromJson(Map<String, dynamic> json) {
-    shopId = json['shopId']?.toInt();
+    id = json['shopId']?.toInt();
     name = json['name']?.toString();
     description = json['description'];
     subtitle = json['subtitle'];
@@ -55,7 +55,7 @@ class ShopModel {
 
   Map<String, dynamic> toJson() {
     return {
-      if (shopId != null) 'shopId': shopId,
+      if (id != null) 'shopId': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (subtitle != null) 'subtitle': subtitle,
