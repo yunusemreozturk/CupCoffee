@@ -1,5 +1,4 @@
 import 'package:cupcoffee/src/view/loading_page.dart';
-import 'package:cupcoffee/src/view/map_sample.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

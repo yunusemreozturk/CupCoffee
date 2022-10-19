@@ -2,11 +2,13 @@ import 'package:cupcoffee/src/app.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/repository/firestore_repository.dart';
+import 'package:cupcoffee/src/service/firestore_service.dart';
 import 'package:cupcoffee/src/view/bottom_navigator.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../models/products_model.dart';
+import '../models/user_model.dart';
 
 enum FirestoreViewModelState { idle, busy }
 
@@ -19,6 +21,7 @@ class FirestoreViewModel {
   Rx<ProductsModel> _productsModel = ProductsModel().obs;
   Rx<ShopsModel> _shopsModel = ShopsModel().obs;
   Rx<OrdersModel> _ordersModel = OrdersModel(orders: []).obs;
+  Rx<UserModel> _userModel = UserModel().obs;
 
   Rx<FirestoreViewModelState> _state = FirestoreViewModelState.idle.obs;
   Rx<Paying> _payingState = Paying.idle.obs;
@@ -28,6 +31,8 @@ class FirestoreViewModel {
   ShopsModel get shopsModel => _shopsModel.value;
 
   OrdersModel get ordersModel => _ordersModel.value;
+
+  UserModel get userModel => _userModel.value;
 
   FirestoreViewModelState get state => _state.value;
 
@@ -40,6 +45,7 @@ class FirestoreViewModel {
   Future onStart() async {
     await getProducts();
     await getShops();
+    await getUser();
     await Future.delayed(const Duration(milliseconds: 500));
 
     return true;
@@ -51,6 +57,17 @@ class FirestoreViewModel {
       _productsModel.value = await _repository.getProducts();
 
       return _productsModel.value;
+    } finally {
+      _state.value = FirestoreViewModelState.busy;
+    }
+  }
+
+  Future<UserModel> getUser() async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      _userModel.value = await _repository.getUser();
+
+      return _userModel.value;
     } finally {
       _state.value = FirestoreViewModelState.busy;
     }
@@ -125,10 +142,13 @@ class FirestoreViewModel {
       Get.back();
       _payingState.value = Paying.processing;
       await Future.delayed(const Duration(seconds: 2));
-
-
     } finally {
       _payingState.value = Paying.confirmed;
     }
+  }
+
+  setProducts() async {
+    final FirestoreService _service = Get.find();
+    await _service.setProducts(_productsModel.value);
   }
 }

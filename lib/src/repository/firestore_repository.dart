@@ -1,4 +1,5 @@
 import 'package:cupcoffee/src/models/shops_model.dart';
+import 'package:cupcoffee/src/models/user_model.dart';
 import 'package:cupcoffee/src/service/firestore_service.dart';
 import 'package:get/get.dart';
 
@@ -13,5 +14,9 @@ class FirestoreRepository {
 
   Future<ShopsModel> getShops()async  {
     return await _service.getShops();
+  }
+
+  Future<UserModel> getUser()async  {
+    return await _service.getUser();
   }
 }

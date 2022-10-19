@@ -72,10 +72,10 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const CircleAvatar(
-                  backgroundColor: Colors.brown,
-                  radius: 35,
-                )
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: profilePicture(),
+                ),
               ],
             ),
           ),
@@ -102,6 +102,42 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  CircleAvatar profilePicture() {
+    return CircleAvatar(
+                  radius: 35,
+                  child: CachedNetworkImage(
+                    imageUrl: _viewModel.userModel.photoUrl!,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => Center(
+                      child: SpinKitThreeBounce(
+                        size: 50,
+                        itemBuilder:
+                            (BuildContext context, int index) {
+                          return DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: index.isEven
+                                  ? Colors.white
+                                  : Colors.brown,
+                              shape: BoxShape.circle,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                    const Icon(Icons.error),
+                  ),
+                );
   }
 
   Column popularCoffee() {

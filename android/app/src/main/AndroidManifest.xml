@@ -11,9 +11,6 @@
         android:label="Cup Coffee"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
-
-       <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyDot0wkaYAZiSb7FPyneLltR0Q638dtfuU"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
