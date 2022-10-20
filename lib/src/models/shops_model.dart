@@ -42,6 +42,7 @@ class ShopModel {
   String? star;
   String? subtitle;
   String? distance;
+  GeoPoint? coordinate;
 
   ShopModel.fromJson(Map<String, dynamic> json) {
     id = json['shopId']?.toInt();
@@ -51,6 +52,7 @@ class ShopModel {
     photo = json['photo']?.toString();
     star = json['star'];
     distance = json['distance'];
+    coordinate = json['coordinate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +63,8 @@ class ShopModel {
       if (subtitle != null) 'subtitle': subtitle,
       if (photo != null) 'photo': photo,
       if (star != null) 'star': star,
-    if (distance != null) 'distance': distance,
+      if (distance != null) 'distance': distance,
+      if (coordinate != null) 'coordinate': coordinate,
     };
   }
 }

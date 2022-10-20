@@ -5,6 +5,7 @@ import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/view/main_pages/product_detail.dart';
 import 'package:cupcoffee/src/view/main_pages/shop_details.dart';
+import 'package:cupcoffee/src/view/main_pages/user_info_page.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +14,30 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:like_button/like_button.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../../config/custom_icons_icons.dart';
 import '../../config/theme.dart';
 import '../../models/products_model.dart';
 import '../../widgets/favorite_button.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final FirestoreViewModel _viewModel = Get.find();
+  final controller = TextEditingController();
+  RxList<ProductModel> coffees = <ProductModel>[].obs;
+
+  @override
+  void initState() {
+    coffees.value = _viewModel.productsModel.products!;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +45,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: CustomAppBar(
           height: Get.width * .46,
-          child: appBar(),
+          child: appBar(context),
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 0),
@@ -48,7 +64,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Padding appBar() {
+  Padding appBar(context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -77,7 +93,7 @@ class HomePage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 5),
-                  child: profilePicture(),
+                  child: profilePicture(context),
                 ),
               ],
             ),
@@ -88,10 +104,12 @@ class HomePage extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               color: themeData.splashColor,
             ),
-            child: const Center(
+            child: Center(
               child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
+                onChanged: searchCoffee,
+                controller: controller,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.search),
                   hintText: 'Search anything',
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
@@ -107,34 +125,37 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  CircleAvatar profilePicture() {
-    return CircleAvatar(
-      radius: 35,
-      child: CachedNetworkImage(
-        imageUrl: _viewModel.userModel.photoUrl!,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
+  Bounceable profilePicture(context) {
+    return Bounceable(
+      onTap: () {},
+      child: CircleAvatar(
+        radius: 35,
+        child: CachedNetworkImage(
+          imageUrl: _viewModel.userModel.photoUrl!,
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        placeholder: (context, url) => Center(
-          child: SpinKitThreeBounce(
-            size: 40,
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven ? Colors.white : Colors.brown,
-                  shape: BoxShape.circle,
-                ),
-              );
-            },
+          placeholder: (context, url) => Center(
+            child: SpinKitThreeBounce(
+              size: 40,
+              itemBuilder: (BuildContext context, int index) {
+                return DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: index.isEven ? Colors.white : Colors.brown,
+                    shape: BoxShape.circle,
+                  ),
+                );
+              },
+            ),
           ),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
     );
   }
@@ -154,17 +175,19 @@ class HomePage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        SizedBox(
-          height: Get.height * .33,
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: _viewModel.productsModel.products?.length,
-            itemBuilder: (BuildContext context, int index) {
-              ProductModel product = _viewModel.productsModel.products![index];
+        Obx(
+          () => SizedBox(
+            height: Get.height * .33,
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: coffees.length,
+              itemBuilder: (BuildContext context, int index) {
+                ProductModel product = coffees[index];
 
-              return productCard(product);
-            },
+                return productCard(product);
+              },
+            ),
           ),
         ),
       ],
@@ -466,5 +489,16 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void searchCoffee(String query) {
+    final suggestion = _viewModel.productsModel.products!.where((element) {
+      final coffeeName = element.name!.toLowerCase();
+      final input = query.toLowerCase();
+
+      return coffeeName.contains(input);
+    }).toList();
+
+    coffees.value = suggestion;
   }
 }

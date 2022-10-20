@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/theme.dart';
+import 'package:cupcoffee/src/widgets/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -95,22 +96,7 @@ class ProductDetail extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Container(
-                          width: 35,
-                          height: 35,
-                          margin: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(.5),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.favorite_border,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                          ),
-                        ),
+                        FavoriteButton(productModel: productModel),
                       ],
                     ),
                   ),

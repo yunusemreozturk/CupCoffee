@@ -49,7 +49,7 @@ class _ShopingPageState extends State<ShopingPage> {
                 ),
               ),
               centerTitle: true,
-              title: Text(
+              title: const Text(
                 'Place order',
                 style: TextStyle(
                   color: Colors.black,
@@ -81,16 +81,17 @@ class _ShopingPageState extends State<ShopingPage> {
     );
   }
 
-  SizedBox addressCard(String title, String subtitle, Icon icon) {
-    return SizedBox(
+  Container addressCard(String title, String subtitle, Icon icon) {
+    return Container(
       height: Get.height * .1,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           icon,
           const SizedBox(width: 7),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 title,
@@ -127,33 +128,37 @@ class _ShopingPageState extends State<ShopingPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              addressCard(
-                'Hotel Diamond Palace',
-                '394K, Central Park, New Delhi, India',
-                Icon(
-                  CustomIcons.map_pin,
-                  color: themeData.colorScheme.secondary,
-                  size: 28,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                addressCard(
+                  _viewModel.userModel.address!['title'],
+                  _viewModel.userModel.address!['full_address'],
+                  Icon(
+                    CustomIcons.map_pin,
+                    color: themeData.colorScheme.secondary,
+                    size: 28,
+                  ),
                 ),
-              ),
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: themeData.colorScheme.secondary.withOpacity(.2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.border_color,
-                  size: 20,
-                  color: themeData.colorScheme.secondary,
-                ),
-              )
-            ],
+                Container(
+                  width: 40,
+                  height: 40,
+                  margin: const EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(
+                    color: themeData.colorScheme.secondary.withOpacity(.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.border_color,
+                    size: 20,
+                    color: themeData.colorScheme.secondary,
+                  ),
+                )
+              ],
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -163,9 +168,9 @@ class _ShopingPageState extends State<ShopingPage> {
                 'Middle road Sediago',
                 '201, sector 25, Centre Park, New Delhi, India',
                 Icon(
-                  CustomIcons.map_pin,
+                  Icons.sports_soccer,
                   color: themeData.colorScheme.secondary,
-                  size: 28,
+                  size: 26,
                 ),
               ),
             ],
@@ -343,7 +348,7 @@ class _ShopingPageState extends State<ShopingPage> {
               ),
             ],
           ),
-          Divider(),
+          const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

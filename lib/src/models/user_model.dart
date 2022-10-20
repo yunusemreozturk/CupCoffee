@@ -7,6 +7,7 @@ class UserModel {
   String? email;
   String? photoUrl;
   int? credit;
+  Map? address;
 
   UserModel({
     this.id,
@@ -14,7 +15,7 @@ class UserModel {
     this.credit,
     this.email,
     this.photoUrl,
-    // this.myBasket,
+    this.address,
   });
 
   UserModel.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -22,6 +23,7 @@ class UserModel {
         name = snapshot.data()?['name'],
         credit = snapshot.data()?['credit'],
         email = snapshot.data()?['email'],
+        address = snapshot.data()?['address'],
         photoUrl = snapshot.data()?['photoUrl'];
 
   Map<String, dynamic> toJson() {
@@ -30,6 +32,7 @@ class UserModel {
       if (name != null) 'name': name,
       if (credit != null) 'credit': credit,
       if (email != null) 'email': email,
+      if (address != null) 'address': address,
       if (photoUrl != null) 'photoUrl': photoUrl,
     };
   }

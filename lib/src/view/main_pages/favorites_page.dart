@@ -12,8 +12,8 @@ import 'package:get/get.dart';
 import '../../models/favorites_model.dart';
 import '../../models/products_model.dart';
 
-class MyFavoritesPage extends StatelessWidget {
-  MyFavoritesPage({Key? key}) : super(key: key);
+class FavoritesPage extends StatelessWidget {
+  FavoritesPage({Key? key}) : super(key: key);
   final FirestoreViewModel _viewModel = Get.find();
 
   @override
@@ -33,21 +33,34 @@ class MyFavoritesPage extends StatelessWidget {
       ),
       body: Obx(() {
         _viewModel.favoritesModel.value;
-        return GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          physics: const BouncingScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 17,
-            childAspectRatio: 0.55,
-          ),
-          itemCount: _viewModel.favoritesModel.value!.favorites!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return favoriteCard(
-              product: _viewModel.favoritesModel.value!.favorites![index],
-            );
-          },
-        );
+        if (_viewModel.favoritesModel.value!.favorites!.isEmpty) {
+          return const Center(
+            child: Text(
+              'You have not added products to favorites.',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          );
+        } else {
+          return GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            physics: const BouncingScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 17,
+              childAspectRatio: 0.55,
+            ),
+            itemCount: _viewModel.favoritesModel.value!.favorites!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return favoriteCard(
+                product: _viewModel.favoritesModel.value!.favorites![index],
+              );
+            },
+          );
+        }
       }),
     );
   }

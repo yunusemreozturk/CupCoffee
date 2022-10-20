@@ -1,6 +1,6 @@
 import 'package:cupcoffee/src/config/theme.dart';
 import 'package:cupcoffee/src/view/main_pages/home_page.dart';
-import 'package:cupcoffee/src/view/main_pages/my_favorites_page.dart';
+import 'package:cupcoffee/src/view/main_pages/favorites_page.dart';
 import 'package:cupcoffee/src/view/secondary_pages/order_confirmed.dart';
 import 'package:cupcoffee/src/view/secondary_pages/order_processing.dart';
 import 'package:cupcoffee/src/view/main_pages/shoping_page.dart';
@@ -24,7 +24,6 @@ class BottomNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Obx(
       () => (_viewModel.payingState == Paying.idle)
           ? PersistentTabView(
@@ -71,7 +70,7 @@ class BottomNavigator extends StatelessWidget {
       HomePage(),
       ShopingPage(),
       MapPage(),
-      MyFavoritesPage(),
+      FavoritesPage(),
       UserInfoPage(),
     ];
   }
@@ -88,9 +87,11 @@ class BottomNavigator extends StatelessWidget {
         activeColorPrimary: themeData.iconTheme.color!,
         inactiveColorPrimary: CupertinoColors.systemGrey,
         onPressed: (context) {
-          Get.to(() => ShopingPage(),
-              transition: Transition.rightToLeft,
-              duration: const Duration(milliseconds: 150));
+          Get.to(
+            () => ShopingPage(),
+            transition: Transition.rightToLeft,
+            duration: const Duration(milliseconds: 150),
+          );
         },
       ),
       PersistentBottomNavBarItem(

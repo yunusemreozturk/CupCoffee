@@ -150,7 +150,10 @@ class ShopDetails extends StatelessWidget {
                   ),
                   child: FlutterMap(
                     options: MapOptions(
-                      center: LatLng(51.509364, -0.128928),
+                      center: LatLng(
+                        shopModel.coordinate!.latitude,
+                        shopModel.coordinate!.longitude,
+                      ),
                       zoom: 16,
                     ),
                     children: [
@@ -162,7 +165,10 @@ class ShopDetails extends StatelessWidget {
                       MarkerLayer(
                         markers: [
                           Marker(
-                            point: LatLng(51.509364, -0.128928),
+                            point: LatLng(
+                              shopModel.coordinate!.latitude,
+                              shopModel.coordinate!.longitude,
+                            ),
                             builder: (BuildContext context) {
                               return const Icon(
                                 Icons.location_on,

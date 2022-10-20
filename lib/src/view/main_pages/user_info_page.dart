@@ -61,6 +61,8 @@ class UserInfoPage extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: _viewModel.ordersModel!.orders!.length,
               itemBuilder: (BuildContext context, int index) {
+                _viewModel.ordersModel!.orders =
+                    _viewModel.ordersModel!.orders!.reversed.toList();
                 OrderModel order = _viewModel.ordersModel!.orders![index];
                 String? name = '';
                 String? photoUrl = '';
@@ -91,32 +93,35 @@ class UserInfoPage extends StatelessWidget {
                         radius: 30,
                         child: CachedNetworkImage(
                           imageUrl: photoUrl!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          placeholder: (context, url) => Center(
-                            child: SpinKitThreeBounce(
-                              size: 40,
-                              itemBuilder: (BuildContext context, int index) {
-                                return DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: index.isEven
-                                        ? Colors.white
-                                        : Colors.brown,
-                                    shape: BoxShape.circle,
+                          imageBuilder: (context, imageProvider) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
                                   ),
-                                );
-                              },
-                            ),
-                          ),
+                                ),
+                              ),
+                          placeholder: (context, url) =>
+                              Center(
+                                child: SpinKitThreeBounce(
+                                  size: 40,
+                                  itemBuilder: (BuildContext context,
+                                      int index) {
+                                    return DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: index.isEven
+                                            ? Colors.white
+                                            : Colors.brown,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                           errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                          const Icon(Icons.error),
                         ),
                       ),
                       subtitle: Text(order.amount.toString()),
@@ -175,7 +180,7 @@ class UserInfoPage extends StatelessWidget {
                         const TextSpan(text: 'You have '),
                         TextSpan(
                             text: r'$'
-                                '${_viewModel.userModel.credit.toString()}',
+                            '${_viewModel.userModel.credit.toString()}',
                             style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -184,7 +189,9 @@ class UserInfoPage extends StatelessWidget {
                       ],
                       style: TextStyle(
                         color: Colors.black,
-                        fontFamily: GoogleFonts.poppins().fontFamily,
+                        fontFamily: GoogleFonts
+                            .poppins()
+                            .fontFamily,
                         fontSize: 13,
                       ),
                     ),
@@ -204,28 +211,30 @@ class UserInfoPage extends StatelessWidget {
       radius: 40,
       child: CachedNetworkImage(
         imageUrl: _viewModel.userModel.photoUrl!,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        placeholder: (context, url) => Center(
-          child: SpinKitThreeBounce(
-            size: 40,
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven ? Colors.white : Colors.brown,
-                  shape: BoxShape.circle,
+        imageBuilder: (context, imageProvider) =>
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+        placeholder: (context, url) =>
+            Center(
+              child: SpinKitThreeBounce(
+                size: 40,
+                itemBuilder: (BuildContext context, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: index.isEven ? Colors.white : Colors.brown,
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                },
+              ),
+            ),
         errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
     );
