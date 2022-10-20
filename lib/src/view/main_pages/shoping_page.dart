@@ -285,6 +285,7 @@ class _ShopingPageState extends State<ShopingPage> {
     });
 
     totalPrice = (subtotal == 0) ? 0 : subtotal - discount + delivery;
+    print(totalPrice);
 
     TextStyle textStyle1 =
         const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
@@ -378,12 +379,22 @@ class _ShopingPageState extends State<ShopingPage> {
   Bounceable payNow(context) {
     return Bounceable(
       onTap: () async {
-        if (_viewModel.basketModel!.basket!.isNotEmpty) {
-          await _viewModel.payNow(context);
+        if (_viewModel.userModel.credit! > 0 &&
+            _viewModel.userModel.credit! - totalPrice > 0) {
+          if (_viewModel.basketModel!.basket!.isNotEmpty) {
+            await _viewModel.payNow(context);
+          } else {
+            Get.snackbar(
+              'Warning',
+              'You don\'t add any coffee',
+              backgroundColor: themeData.colorScheme.secondary,
+              colorText: Colors.white,
+            );
+          }
         } else {
           Get.snackbar(
             'Warning',
-            'You don\'t add any coffee',
+            'You don\'t have enough money.',
             backgroundColor: themeData.colorScheme.secondary,
             colorText: Colors.white,
           );

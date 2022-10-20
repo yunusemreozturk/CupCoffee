@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../config/theme.dart';
+import '../../models/orders_model.dart';
 
 class UserInfoPage extends StatelessWidget {
   final FirestoreViewModel _viewModel = Get.find();
@@ -15,9 +16,21 @@ class UserInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'User Info',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: themeData.scaffoldBackgroundColor,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
               appBar(),
@@ -31,20 +44,96 @@ class UserInfoPage extends StatelessWidget {
 
   Expanded body() {
     return Expanded(
-      flex: 3,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: Colors.white,
-        ),
-        child: ListView.builder(
-          itemCount: _viewModel.ordersModel!.orders!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
+      flex: 4,
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Past Orders',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17,
+            ),
+          ),
+          const SizedBox(height: 7),
+          Expanded(
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: _viewModel.ordersModel!.orders!.length,
+              itemBuilder: (BuildContext context, int index) {
+                OrderModel order = _viewModel.ordersModel!.orders![index];
+                String? name = '';
+                String? photoUrl = '';
 
-            );
-          },
-        ),
+                _viewModel.productsModel.products!.forEach((element) {
+                  if (element.id == order.id) {
+                    name = element.name;
+                    photoUrl = element.photo;
+                  }
+                });
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        name!,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        child: CachedNetworkImage(
+                          imageUrl: photoUrl!,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) => Center(
+                            child: SpinKitThreeBounce(
+                              size: 40,
+                              itemBuilder: (BuildContext context, int index) {
+                                return DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: index.isEven
+                                        ? Colors.white
+                                        : Colors.brown,
+                                    shape: BoxShape.circle,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                      subtitle: Text(order.amount.toString()),
+                      trailing: Text(
+                        r'$ ' '${order.amount! * order.price!}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -56,7 +145,6 @@ class UserInfoPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          // color: Colors.red,
         ),
         clipBehavior: Clip.hardEdge,
         child: Row(

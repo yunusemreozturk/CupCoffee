@@ -2,12 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../config/theme.dart';
+
 class MapPage extends StatelessWidget {
   const MapPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        title: const Text(
+          'Location',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: themeData.scaffoldBackgroundColor,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Center(
           child: FlutterMap(
