@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
-import 'package:cupcoffee/src/view/product_detail.dart';
-import 'package:cupcoffee/src/view/shop_details.dart';
+import 'package:cupcoffee/src/view/main_pages/product_detail.dart';
+import 'package:cupcoffee/src/view/main_pages/shop_details.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
-          height: Get.height * .23,
+          height: Get.height * .27,
           child: appBar(),
         ),
         body: Padding(
@@ -147,6 +147,7 @@ class HomePage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(height: 5),
         SizedBox(
           height: Get.height * .35,
           child: ListView.builder(
@@ -354,6 +355,7 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 5),
         SizedBox(
           height: Get.height * .3,
           child: ListView.builder(

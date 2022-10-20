@@ -1,28 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class OrdersModel {
-  List<OrderModel> orders = [];
+  List<OrderModel>? orders = [];
 
   OrdersModel({required this.orders});
 
-  OrdersModel.fromMap(List list) {
-    final v = list;
-    final List<OrderModel> arr0 = [];
+  OrdersModel.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    if (snapshot.data()?['orders'] != null) {
+      final v = snapshot.data()?['orders'];
+      final List<OrderModel> arr0 = [];
 
-    v.forEach((v) {
-      arr0.add(OrderModel.fromJson(v));
-    });
+      v.forEach((v) {
+        arr0.add(OrderModel.fromJson(v));
+      });
 
-    orders = arr0;
+      orders = arr0;
+    }
   }
 
-  List toJson() {
-    final v = orders;
-    final arr0 = [];
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    if (orders != null) {
+      final v = orders;
+      final arr0 = [];
 
-    v.forEach((v) {
-      arr0.add(v.toJson());
-    });
+      v!.forEach((v) {
+        arr0.add(v.toJson());
+      });
 
-    return arr0;
+      data['orders'] = arr0;
+    }
+    return data;
   }
 }
 

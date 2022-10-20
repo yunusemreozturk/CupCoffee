@@ -1,6 +1,5 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cupcoffee/src/view/view_products.dart';
+import 'package:cupcoffee/src/view/main_pages/view_products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -8,13 +7,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../config/theme.dart';
-import '../models/shops_model.dart';
+import '../../config/theme.dart';
+import '../../models/shops_model.dart';
+import '../../viewmodel/firestore_viewmodel.dart';
 
 class ShopDetails extends StatelessWidget {
   final ShopModel shopModel;
 
-  const ShopDetails({Key? key, required this.shopModel}) : super(key: key);
+  ShopDetails({Key? key, required this.shopModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

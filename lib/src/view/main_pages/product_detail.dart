@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/theme.dart';
-import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:readmore/readmore.dart';
 
-import '../models/products_model.dart';
-import '../viewmodel/firestore_viewmodel.dart';
+import '../../models/products_model.dart';
+import '../../viewmodel/firestore_viewmodel.dart';
 
 class ProductDetail extends StatelessWidget {
   final ProductModel productModel;
@@ -116,6 +116,7 @@ class ProductDetail extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
                 children: [
+                  const SizedBox(height: 7),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -123,12 +124,12 @@ class ProductDetail extends StatelessWidget {
                         productModel.name!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 22,
                         ),
                       ),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.yellow,
                             size: 25,
@@ -148,26 +149,49 @@ class ProductDetail extends StatelessWidget {
                     children: [
                       Text(
                         r'($' '${productModel.price})',
-                        style: TextStyle(
-                          fontSize: 20,
+                        style: const TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
-                  Text(
-                    productModel.description!,
-                    style: const TextStyle(
-                      color: Colors.grey,
+                  const SizedBox(height: 5),
+                  Container(
+                    height: Get.height * .1,
+                    child: ReadMoreText(
+                      '${productModel.description!} ',
+                      trimLines: 2,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                      colorClickableText: Colors.pink,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: 'Show more',
+                      trimExpandedText: 'Show less',
+                      lessStyle: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: themeData.colorScheme.secondary,
+                      ),
+                      moreStyle: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: themeData.colorScheme.secondary,
+                      ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ingredientContainer('assets/images/coffee_beans.png'),
-                      ingredientContainer('assets/images/milk_carton.png'),
-                      ingredientContainer('assets/images/whiped_cream.png'),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ingredientContainer('assets/images/coffee_beans.png'),
+                        ingredientContainer('assets/images/milk_carton.png'),
+                        ingredientContainer('assets/images/whiped_cream.png'),
+                      ],
+                    ),
                   ),
                   Row(
                     children: const [
@@ -175,12 +199,13 @@ class ProductDetail extends StatelessWidget {
                         'Choose Size',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                     ],
                   ),
                   chooseSize(),
+                  const SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -235,7 +260,7 @@ class ProductDetail extends StatelessWidget {
   SizedBox chooseSize() {
     return SizedBox(
       width: Get.width,
-      height: 55,
+      height: 30,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: productModel.sizes!.length,
@@ -249,7 +274,7 @@ class ProductDetail extends StatelessWidget {
               },
               child: Container(
                 width: Get.width * .24,
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: (sizeSelect.value == index)
                       ? themeData.colorScheme.primary
@@ -264,7 +289,7 @@ class ProductDetail extends StatelessWidget {
                     child: Text(
                   '$size ml',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     color: (sizeSelect.value == index)
                         ? Colors.white
                         : themeData.colorScheme.primary,
@@ -288,7 +313,7 @@ class ProductDetail extends StatelessWidget {
           Expanded(
             child: Bounceable(
               onTap: () {
-                if(productAmount.value != 1){
+                if (productAmount.value != 1) {
                   productAmount.value--;
                 } else {
                   Get.snackbar(
@@ -298,7 +323,6 @@ class ProductDetail extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 }
-
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -366,12 +390,15 @@ class ProductDetail extends StatelessWidget {
 
   Container ingredientContainer(String path) {
     return Container(
-      width: 70,
-      height: 70,
+      width: 55,
+      height: 55,
       decoration: BoxDecoration(
           color: themeData.colorScheme.secondary.withOpacity(.2),
           borderRadius: BorderRadius.circular(15)),
-      child: Image.asset(path),
+      child: Image.asset(
+        path,
+        scale: 1.2,
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/theme.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
+import 'package:cupcoffee/src/view/main_pages/product_detail.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:vertical_tab_bar_view/vertical_tab_bar_view.dart';
 
-import '../viewmodel/firestore_viewmodel.dart';
+import '../../viewmodel/firestore_viewmodel.dart';
 
 class ViewProducts extends StatefulWidget {
   final ShopModel shopModel;
@@ -37,70 +38,77 @@ class _ViewProductsState extends State<ViewProducts> {
     products = products.reversed.toList();
   }
 
-  productCard({
-    required String photoUrl,
-    required String name,
-    required int price,
+  Bounceable productCard({
+    required ProductModel product,
   }) {
-    return Column(
-      children: [
-        Container(
-          height: Get.height * .27,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-          child: CachedNetworkImage(
-            imageUrl: photoUrl,
-            imageBuilder: (context, imageProvider) => Container(
-              //todo: lokasyon uzaklığını al
-              width: Get.width * .45,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.fill,
+    return Bounceable(
+      onTap: () {
+        Get.to(
+          () => ProductDetail(productModel: product),
+          transition: Transition.downToUp,
+          duration: const Duration(milliseconds: 300),
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            height: Get.height * .25,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+            child: CachedNetworkImage(
+              imageUrl: product.photo!,
+              imageBuilder: (context, imageProvider) => Container(
+                //todo: lokasyon uzaklığını al
+                width: Get.width * .45,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
+              placeholder: (context, url) => Center(
+                child: SpinKitThreeBounce(
+                  size: 50,
+                  itemBuilder: (BuildContext context, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: index.isEven ? Colors.white : Colors.brown,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
-            placeholder: (context, url) => Center(
-              child: SpinKitThreeBounce(
-                size: 50,
-                itemBuilder: (BuildContext context, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: index.isEven ? Colors.white : Colors.brown,
-                      shape: BoxShape.circle,
-                    ),
-                  );
-                },
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Row(
+              children: [
+                Text(
+                  product.name!,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ],
             ),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Row(
-            children: [
-              Text(
-                name,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: Row(
+              children: [
+                Text(
+                  r'$' + product.price.toString(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 14),
+                ),
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Row(
-            children: [
-              Text(
-                r'$' + price.toString(),
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -119,7 +127,7 @@ class _ViewProductsState extends State<ViewProducts> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   height: Get.height * .1,
-                  width: Get.width * .5,
+                  width: Get.width * .6,
                   child: const TabBar(
                     indicatorColor: Colors.black,
                     indicatorSize: TabBarIndicatorSize.label,
@@ -165,7 +173,7 @@ class _ViewProductsState extends State<ViewProducts> {
     );
   }
 
-  tabView() {
+  Column tabView() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,14 +194,13 @@ class _ViewProductsState extends State<ViewProducts> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 25,
+              mainAxisSpacing: 5,
               childAspectRatio: 0.7,
             ),
             itemCount: products.length,
             itemBuilder: (BuildContext context, int index) {
               return productCard(
-                photoUrl: products[index].photo!,
-                name: products[index].name!,
-                price: products[index].price!,
+                product: products[index],
               );
             },
           ),

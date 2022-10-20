@@ -7,8 +7,8 @@ class UserModel {
   String? email;
   String? photoUrl;
   int? credit;
-  OrdersModel? myBasket = OrdersModel(orders: []);
-  OrdersModel? orders = OrdersModel(orders: []);
+  // OrdersModel? myBasket = OrdersModel(orders: []);
+  // OrdersModel? orders = OrdersModel(orders: []);
 
   UserModel({
     this.id,
@@ -16,7 +16,7 @@ class UserModel {
     this.credit,
     this.email,
     this.photoUrl,
-    this.myBasket,
+    // this.myBasket,
   });
 
   UserModel.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot)
@@ -24,8 +24,8 @@ class UserModel {
         name = snapshot.data()?['name'],
         credit = snapshot.data()?['credit'],
         email = snapshot.data()?['email'],
-        myBasket = OrdersModel.fromMap(snapshot.data()?['myBasket']),
-        orders = OrdersModel.fromMap(snapshot.data()?['orders']),
+        // myBasket = OrdersModel.fromMap(snapshot.data()?['myBasket']),
+        // orders = OrdersModel.fromMap(snapshot.data()?['orders']),
         photoUrl = snapshot.data()?['photoUrl'];
 
   Map<String, dynamic> toJson() {
@@ -34,8 +34,8 @@ class UserModel {
       if (name != null) 'name': name,
       if (credit != null) 'credit': credit,
       if (email != null) 'email': email,
-      if (myBasket != null) 'myBasket': myBasket?.toJson(),
-      if (orders != null) 'orders': orders?.toJson(),
+      // if (myBasket != null) 'myBasket': myBasket?.toJson(),
+      // if (orders != null) 'orders': orders?.toJson(),
       if (photoUrl != null) 'photoUrl': photoUrl,
     };
   }

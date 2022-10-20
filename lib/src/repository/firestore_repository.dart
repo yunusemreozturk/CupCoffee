@@ -3,6 +3,8 @@ import 'package:cupcoffee/src/models/user_model.dart';
 import 'package:cupcoffee/src/service/firestore_service.dart';
 import 'package:get/get.dart';
 
+import '../models/basket_model.dart';
+import '../models/orders_model.dart';
 import '../models/products_model.dart';
 
 class FirestoreRepository {
@@ -22,5 +24,25 @@ class FirestoreRepository {
 
   Future<UserModel> setUser(UserModel userModel)async  {
     return await _service.setUser(userModel);
+  }
+
+  @override
+  Future<BasketModel?> getBasket() async {
+    return await _service.getBasket();
+  }
+
+  @override
+  Future<BasketModel?> setBasket(BasketModel basketModel) async {
+    return await _service.setBasket(basketModel);
+  }
+
+  @override
+  Future<OrdersModel?> getOrders() async {
+    return await _service.getOrders();
+  }
+
+  @override
+  Future<OrdersModel?> setOrders(OrdersModel ordersModel) async {
+    return await _service.setOrders(ordersModel);
   }
 }

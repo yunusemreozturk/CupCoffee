@@ -4,13 +4,10 @@ import 'package:flutter/services.dart';
 
 import 'src/app.dart';
 
-//todo: sepeti ayarla
 //todo: para azalma mantığı ekle
-//todo: sepetten çıkartma
 //todo: favorilere ekleme
 //todo: kupon kodu
 //todo: türkçe ekle
-//todo: hata yakalamaları yap
 //todo: hata yakalamaları yap
 
 Future<void> main() async {

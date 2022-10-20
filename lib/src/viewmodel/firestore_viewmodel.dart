@@ -1,12 +1,8 @@
-import 'package:cupcoffee/src/app.dart';
+import 'package:cupcoffee/src/models/basket_model.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/repository/firestore_repository.dart';
-import 'package:cupcoffee/src/service/firestore_service.dart';
-import 'package:cupcoffee/src/view/main_pages/bottom_navigator.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../models/products_model.dart';
 import '../models/user_model.dart';
@@ -15,12 +11,14 @@ enum FirestoreViewModelState { idle, busy }
 
 enum Paying { idle, processing, confirmed, error }
 
-class FirestoreViewModel {
+class FirestoreViewModel extends GetxController {
   final FirestoreRepository _repository = Get.find();
 
   Rx<ProductsModel> _productsModel = ProductsModel().obs;
   Rx<ShopsModel> _shopsModel = ShopsModel().obs;
   Rx<UserModel> _userModel = UserModel().obs;
+  OrdersModel? ordersModel = OrdersModel(orders: []);
+  BasketModel? basketModel = BasketModel(basket: []);
 
   Rx<FirestoreViewModelState> _state = FirestoreViewModelState.idle.obs;
   Rx<Paying> _payingState = Paying.idle.obs;
@@ -28,10 +26,6 @@ class FirestoreViewModel {
   ProductsModel get productsModel => _productsModel.value;
 
   ShopsModel get shopsModel => _shopsModel.value;
-
-  OrdersModel? get myBasket => _userModel.value.myBasket;
-
-  OrdersModel? get orders => _userModel.value.orders;
 
   UserModel get userModel => _userModel.value;
 
@@ -43,13 +37,15 @@ class FirestoreViewModel {
     _payingState.value = value;
   }
 
-  Future onStart() async {
+  @override
+  void onInit() async {
     await getProducts();
     await getShops();
     await getUser();
-    await Future.delayed(const Duration(milliseconds: 500));
+    await getBasket();
+    await getOrders();
 
-    return true;
+    super.onInit();
   }
 
   Future<ProductsModel> getProducts() async {
@@ -59,7 +55,7 @@ class FirestoreViewModel {
 
       return _productsModel.value;
     } finally {
-      _state.value = FirestoreViewModelState.busy;
+      _state.value = FirestoreViewModelState.idle;
     }
   }
 
@@ -70,7 +66,7 @@ class FirestoreViewModel {
 
       return _userModel.value;
     } finally {
-      _state.value = FirestoreViewModelState.busy;
+      _state.value = FirestoreViewModelState.idle;
     }
   }
 
@@ -81,7 +77,7 @@ class FirestoreViewModel {
 
       return _shopsModel.value;
     } finally {
-      _state.value = FirestoreViewModelState.busy;
+      _state.value = FirestoreViewModelState.idle;
     }
   }
 
@@ -93,8 +89,8 @@ class FirestoreViewModel {
     try {
       _state.value = FirestoreViewModelState.busy;
 
-      if (myBasket!.orders.isEmpty) {
-        myBasket!.orders.add(
+      if (basketModel!.basket!.isEmpty) {
+        basketModel!.basket!.add(
           OrderModel(
             id: productModel.id,
             amount: productAmount,
@@ -105,7 +101,7 @@ class FirestoreViewModel {
       } else {
         bool tempBool = false;
 
-        for (var map in myBasket!.orders) {
+        for (var map in basketModel!.basket!) {
           if (map.toJson()['productId'] == productModel.id &&
               map.toJson()['sizes'] == productModel.sizes![sizeSelect]) {
             tempBool = true;
@@ -113,7 +109,7 @@ class FirestoreViewModel {
         }
 
         if (tempBool) {
-          myBasket!.orders.forEach((element) {
+          basketModel!.basket!.forEach((element) {
             if (element.id == productModel.id &&
                 element.size == productModel.sizes![sizeSelect]) {
               int temp = element.amount!;
@@ -122,7 +118,7 @@ class FirestoreViewModel {
             }
           });
         } else {
-          myBasket!.orders.add(
+          basketModel!.basket!.add(
             OrderModel(
               id: productModel.id,
               amount: productAmount,
@@ -134,7 +130,7 @@ class FirestoreViewModel {
       }
     } finally {
       _state.value = FirestoreViewModelState.idle;
-      await setUser(userModel);
+      await setBasket(basketModel!);
     }
   }
 
@@ -143,32 +139,76 @@ class FirestoreViewModel {
       Get.back();
       _payingState.value = Paying.processing;
 
-      userModel.myBasket!.orders.forEach((element) {
+      basketModel?.basket?.forEach((element) {
         int credit = userModel.credit!;
         credit -= element.price! * element.amount!;
         userModel.credit = credit;
       });
-      userModel.myBasket!.orders.forEach((element) {
-        userModel.orders!.orders.add(element);
+      basketModel?.basket?.forEach((element) {
+        basketModel?.basket?.add(element);
       });
 
-      userModel.myBasket = OrdersModel(orders: []);
+      basketModel = BasketModel(basket: []);
 
-      await setUser(userModel);
+      await setBasket(basketModel!);
       await Future.delayed(const Duration(seconds: 1));
     } finally {
       _payingState.value = Paying.confirmed;
     }
   }
 
-  Future<UserModel> setUser(UserModel userModel) async {
+  Future<BasketModel?> getBasket() async {
     try {
       _state.value = FirestoreViewModelState.busy;
-      _userModel.value = await _repository.setUser(userModel);
+      basketModel = (await _repository.getBasket())!;
 
-      return _userModel.value;
+      return basketModel;
     } finally {
-      _state.value = FirestoreViewModelState.busy;
+      _state.value = FirestoreViewModelState.idle;
     }
   }
+
+  Future<BasketModel?> setBasket(BasketModel basket) async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      basketModel = (await _repository.setBasket(basket))!;
+
+      return basketModel;
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<OrdersModel?> getOrders() async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      ordersModel = (await _repository.getOrders())!;
+
+      return ordersModel;
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<OrdersModel?> setOrders(OrdersModel orders) async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      ordersModel = await _repository.setOrders(orders);
+
+      return ordersModel;
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+// Future<UserModel> setUser(UserModel userModel) async {
+//   try {
+//     _state.value = FirestoreViewModelState.busy;
+//     _userModel.value = await _repository.setUser(userModel);
+//
+//     return _userModel.value;
+//   } finally {
+//     _state.value = FirestoreViewModelState.busy;
+//   }
+// }
 }

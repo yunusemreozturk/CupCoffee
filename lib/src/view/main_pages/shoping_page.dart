@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/custom_icons_icons.dart';
 import 'package:cupcoffee/src/config/theme.dart';
+import 'package:cupcoffee/src/models/basket_model.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
 import 'package:cupcoffee/src/view/main_pages/bottom_navigator.dart';
 import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
@@ -28,7 +29,6 @@ class _ShopingPageState extends State<ShopingPage> {
   int discount = 90;
   int delivery = 50;
   int totalPrice = 0;
-  RxBool refresh = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +178,7 @@ class _ShopingPageState extends State<ShopingPage> {
   Container orders() {
     List<Widget> list = <Widget>[];
 
-    _viewModel.myBasket!.orders.forEach((order) {
+    _viewModel.basketModel!.basket!.forEach((order) {
       _viewModel.productsModel.products!.forEach((product) {
         if (order.id == product.id) {
           list.add(
@@ -241,7 +241,7 @@ class _ShopingPageState extends State<ShopingPage> {
                       ],
                     ),
                   ),
-                  increaseOrDecreaseAmount(order, _viewModel.myBasket!),
+                  increaseOrDecreaseAmount(order, _viewModel.basketModel!),
                 ],
               ),
             ),
@@ -250,7 +250,7 @@ class _ShopingPageState extends State<ShopingPage> {
       });
     });
 
-    if (_viewModel.myBasket!.orders.isEmpty) {
+    if (_viewModel.basketModel!.basket!.isEmpty) {
       return Container(
         margin: const EdgeInsets.only(bottom: 10),
         width: Get.width,
@@ -280,7 +280,7 @@ class _ShopingPageState extends State<ShopingPage> {
 
   Container calculatePrice() {
     subtotal = 0;
-    _viewModel.myBasket!.orders.forEach((element) {
+    _viewModel.basketModel?.basket?.forEach((element) {
       subtotal += element.price! * element.amount!;
     });
 
@@ -309,7 +309,7 @@ class _ShopingPageState extends State<ShopingPage> {
                 style: textStyle1,
               ),
               Text(
-                _viewModel.myBasket!.orders.length.toString(),
+                _viewModel.basketModel!.basket!.length.toString(),
                 style: textStyle1,
               )
             ],
@@ -403,7 +403,7 @@ class _ShopingPageState extends State<ShopingPage> {
 
   SizedBox increaseOrDecreaseAmount(
     OrderModel order,
-    OrdersModel orders,
+    BasketModel basketModel,
   ) {
     return SizedBox(
       width: 100,
@@ -416,13 +416,9 @@ class _ShopingPageState extends State<ShopingPage> {
                 if (order.amount != 1) {
                   order.amount = order.amount! - 1;
                 } else {
-                  List temp = orders.toJson();
+                  basketModel.basket!.removeWhere((element) =>
+                      (element.id == order.id && element.size == order.size));
 
-                  temp.removeWhere((element) =>
-                      (element['productId'] == order.id &&
-                          element['sizes'] == order.size));
-
-                  _viewModel.userModel.myBasket = OrdersModel.fromMap(temp);
                   String name = '';
 
                   _viewModel.productsModel.products!.forEach((element) {
@@ -440,7 +436,7 @@ class _ShopingPageState extends State<ShopingPage> {
                 }
                 setState(() {});
 
-                await _viewModel.setUser(_viewModel.userModel);
+                await _viewModel.setBasket(_viewModel.basketModel!);
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -470,10 +466,11 @@ class _ShopingPageState extends State<ShopingPage> {
           ),
           Expanded(
             child: Bounceable(
-              onTap: () {
+              onTap: () async {
                 if (order.amount! < 10) {
                   order.amount = order.amount! + 1;
                   setState(() {});
+                  await _viewModel.setBasket(_viewModel.basketModel!);
                 } else {
                   Get.snackbar(
                     'Warning',

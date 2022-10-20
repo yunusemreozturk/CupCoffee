@@ -23,7 +23,7 @@ class OrderConfirmed extends StatelessWidget {
                 width: Get.width * .7,
                 child: Center(
                   child: Lottie.asset(
-                    'assets/gif/processing.json',
+                    'assets/gif/ordered.json',
                     animate: false,
                   ),
                 ),

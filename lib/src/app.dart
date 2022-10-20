@@ -16,16 +16,10 @@ class MyApp extends StatelessWidget {
       title: 'Cup Coffee',
       debugShowCheckedModeBanner: false,
       theme: themeData,
-      // home: MapSample(),
-      home: FutureBuilder(
-        future: _viewModel.onStart(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData == true){
-            return BottomNavigator();
-          } else {
-            return LoadingPage();
-          }
-        },
+      home: Obx(
+        () => (_viewModel.state != FirestoreViewModelState.busy)
+            ? BottomNavigator()
+            : LoadingPage(),
       ),
     );
   }
