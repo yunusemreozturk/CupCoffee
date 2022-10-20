@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'src/app.dart';
 
 //todo: para azalma mantığı ekle
+//todo: kredi 0 ise alamasın
 //todo: favorilere ekleme
 //todo: kupon kodu
 //todo: türkçe ekle

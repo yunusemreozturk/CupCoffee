@@ -378,7 +378,17 @@ class _ShopingPageState extends State<ShopingPage> {
   Bounceable payNow(context) {
     return Bounceable(
       onTap: () async {
-        await _viewModel.payNow(context);
+        if (_viewModel.basketModel!.basket!.isNotEmpty) {
+          Get.back();
+          await _viewModel.payNow(context);
+        } else {
+          Get.snackbar(
+            'Warning',
+            'You don\'t add any coffee',
+            backgroundColor: themeData.colorScheme.secondary,
+            colorText: Colors.white,
+          );
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(top: 15, bottom: 30),

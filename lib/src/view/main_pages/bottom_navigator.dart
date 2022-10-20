@@ -24,8 +24,9 @@ class BottomNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Obx(
-      () => _viewModel.payingState == Paying.idle
+      () => (_viewModel.payingState == Paying.idle)
           ? PersistentTabView(
               context,
               controller: _controller,
@@ -59,7 +60,7 @@ class BottomNavigator extends StatelessWidget {
               navBarStyle: NavBarStyle
                   .style6, // Choose the nav bar style with this property.
             )
-          : _viewModel.payingState == Paying.processing
+          : (_viewModel.payingState == Paying.processing)
               ? OrderProcessing()
               : OrderConfirmed(),
     );

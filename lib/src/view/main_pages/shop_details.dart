@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:readmore/readmore.dart';
 
 import '../../config/theme.dart';
 import '../../models/shops_model.dart';
@@ -22,137 +23,164 @@ class ShopDetails extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    height: Get.height * .4,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Stack(
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: shopModel.photo!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            width: Get.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          placeholder: (context, url) => Center(
-                            child: SpinKitThreeBounce(
-                              size: 50,
-                              itemBuilder: (BuildContext context, int index) {
-                                return DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: index.isEven
-                                        ? Colors.white
-                                        : Colors.brown,
-                                    shape: BoxShape.circle,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              shopModel.name!,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 15,
-                                ),
-                                Text(
-                                  '${shopModel.star!} ratings',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                        Text(
-                          shopModel.subtitle!,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          shopModel.description!,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        const SizedBox(height: 10),
-                        Container(
-                          height: Get.height * .3,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: FlutterMap(
-                            options: MapOptions(
-                              center: LatLng(51.509364, -0.128928),
-                              zoom: 16,
-                            ),
-                            children: [
-                              TileLayer(
-                                urlTemplate:
-                                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                userAgentPackageName: 'com.example.app',
-                              ),
-                              MarkerLayer(
-                                markers: [
-                                  Marker(
-                                    point: LatLng(51.509364, -0.128928),
-                                    builder: (BuildContext context) {
-                                      return const Icon(
-                                        Icons.location_on,
-                                        size: 40,
-                                        color: Colors.red,
-                                      );
-                                    },
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        viewProducts(context),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            body(context),
             appBar(),
           ],
         ),
+      ),
+    );
+  }
+
+  SingleChildScrollView body(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            height: Get.height * .4,
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Stack(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: shopModel.photo!,
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: Get.width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Center(
+                    child: SpinKitThreeBounce(
+                      size: 50,
+                      itemBuilder: (BuildContext context, int index) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: index.isEven ? Colors.white : Colors.brown,
+                            shape: BoxShape.circle,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 25,
+              vertical: 20,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      shopModel.name!,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.yellow,
+                          size: 16,
+                        ),
+                        Text(
+                          '${shopModel.star!} ratings',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  shopModel.subtitle!,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 13),
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  height: Get.height * .1,
+                  child: ReadMoreText(
+                    '${shopModel.description!} ',
+                    trimLines: 3,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                    colorClickableText: Colors.pink,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Show more',
+                    trimExpandedText: 'Show less',
+                    lessStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: themeData.colorScheme.secondary,
+                    ),
+                    moreStyle: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: themeData.colorScheme.secondary,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  height: Get.height * .3,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: FlutterMap(
+                    options: MapOptions(
+                      center: LatLng(51.509364, -0.128928),
+                      zoom: 16,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(51.509364, -0.128928),
+                            builder: (BuildContext context) {
+                              return const Icon(
+                                Icons.location_on,
+                                size: 40,
+                                color: Colors.red,
+                              );
+                            },
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                viewProducts(context),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -204,7 +232,7 @@ class ShopDetails extends StatelessWidget {
             ));
       },
       child: Container(
-        margin: const EdgeInsets.only(top: 15, bottom: 30),
+        margin: const EdgeInsets.only(top: 15),
         height: Get.height * .08,
         decoration: BoxDecoration(
           color: themeData.colorScheme.primary,

@@ -17,9 +17,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: themeData,
       home: Obx(
-        () => (_viewModel.state != FirestoreViewModelState.busy)
+        () => (_viewModel.state != FirestoreViewModelState.busy ||
+                (_viewModel.payingState == Paying.confirmed ||
+                    _viewModel.payingState == Paying.processing))
             ? BottomNavigator()
-            : LoadingPage(),
+            : const LoadingPage(),
       ),
     );
   }

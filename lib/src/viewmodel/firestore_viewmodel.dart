@@ -37,6 +37,7 @@ class FirestoreViewModel extends GetxController {
     _payingState.value = value;
   }
 
+
   @override
   void onInit() async {
     await getProducts();
@@ -54,17 +55,6 @@ class FirestoreViewModel extends GetxController {
       _productsModel.value = await _repository.getProducts();
 
       return _productsModel.value;
-    } finally {
-      _state.value = FirestoreViewModelState.idle;
-    }
-  }
-
-  Future<UserModel> getUser() async {
-    try {
-      _state.value = FirestoreViewModelState.busy;
-      _userModel.value = (await _repository.getUser())!;
-
-      return _userModel.value;
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -136,7 +126,6 @@ class FirestoreViewModel extends GetxController {
 
   Future<void> payNow(context) async {
     try {
-      Get.back();
       _payingState.value = Paying.processing;
 
       basketModel?.basket?.forEach((element) {
@@ -144,16 +133,41 @@ class FirestoreViewModel extends GetxController {
         credit -= element.price! * element.amount!;
         userModel.credit = credit;
       });
+
       basketModel?.basket?.forEach((element) {
-        basketModel?.basket?.add(element);
+        ordersModel?.orders?.add(element);
       });
 
       basketModel = BasketModel(basket: []);
 
       await setBasket(basketModel!);
+      await setUser(userModel);
+      await setOrders(ordersModel!);
       await Future.delayed(const Duration(seconds: 1));
     } finally {
       _payingState.value = Paying.confirmed;
+    }
+  }
+
+  Future<UserModel> getUser() async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      _userModel.value = (await _repository.getUser())!;
+
+      return _userModel.value;
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<UserModel> setUser(UserModel userModel) async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      _userModel.value = await _repository.setUser(userModel);
+
+      return _userModel.value;
+    } finally {
+      _state.value = FirestoreViewModelState.busy;
     }
   }
 
@@ -200,15 +214,4 @@ class FirestoreViewModel extends GetxController {
       _state.value = FirestoreViewModelState.idle;
     }
   }
-
-// Future<UserModel> setUser(UserModel userModel) async {
-//   try {
-//     _state.value = FirestoreViewModelState.busy;
-//     _userModel.value = await _repository.setUser(userModel);
-//
-//     return _userModel.value;
-//   } finally {
-//     _state.value = FirestoreViewModelState.busy;
-//   }
-// }
 }

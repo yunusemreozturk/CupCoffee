@@ -50,14 +50,16 @@ class _ViewProductsState extends State<ViewProducts> {
         );
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
             height: Get.height * .25,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: CachedNetworkImage(
               imageUrl: product.photo!,
               imageBuilder: (context, imageProvider) => Container(
-                //todo: lokasyon uzaklığını al
                 width: Get.width * .45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -65,6 +67,14 @@ class _ViewProductsState extends State<ViewProducts> {
                     image: imageProvider,
                     fit: BoxFit.fill,
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 3.0,
+                      spreadRadius: 0.2,
+                      offset: Offset(2.0, 4.0),
+                    )
+                  ],
                 ),
               ),
               placeholder: (context, url) => Center(
@@ -84,7 +94,7 @@ class _ViewProductsState extends State<ViewProducts> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 4),
+            padding: const EdgeInsets.only(left: 4, top: 5),
             child: Row(
               children: [
                 Text(
@@ -100,9 +110,9 @@ class _ViewProductsState extends State<ViewProducts> {
             child: Row(
               children: [
                 Text(
-                  r'$' + product.price.toString(),
+                  r'$ ' + product.price.toString(),
                   style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 14),
+                      fontWeight: FontWeight.w600, fontSize: 14),
                 ),
               ],
             ),
@@ -159,6 +169,9 @@ class _ViewProductsState extends State<ViewProducts> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 5,
+            ),
             Expanded(
               child: TabBarView(
                 children: [
@@ -183,7 +196,7 @@ class _ViewProductsState extends State<ViewProducts> {
             'Today\'s Special',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 16,
             ),
           ),
         ),
@@ -193,9 +206,9 @@ class _ViewProductsState extends State<ViewProducts> {
             physics: const BouncingScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 25,
-              mainAxisSpacing: 5,
-              childAspectRatio: 0.7,
+              crossAxisSpacing: 17,
+
+              childAspectRatio: 0.55,
             ),
             itemCount: products.length,
             itemBuilder: (BuildContext context, int index) {
@@ -211,7 +224,7 @@ class _ViewProductsState extends State<ViewProducts> {
 
   CustomAppBar appBar() {
     return CustomAppBar(
-      height: Get.height * .3,
+      height: Get.height * .26,
       child: Column(
         children: [
           AppBar(
@@ -247,10 +260,18 @@ class _ViewProductsState extends State<ViewProducts> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Container(
-                height: Get.height * .2,
+                height: Get.height * .17,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 3.0,
+                      spreadRadius: 0.2,
+                      offset: Offset(2.0, 4.0),
+                    )
+                  ],
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Row(

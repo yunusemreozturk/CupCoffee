@@ -23,11 +23,16 @@ class ProductDetail extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               height: Get.height * .4,
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              margin: const EdgeInsets.only(
+                right: 15,
+                left: 15,
+                top: 10,
+                bottom: 20,
+              ),
               child: Stack(
                 children: [
                   CachedNetworkImage(
@@ -112,79 +117,82 @@ class ProductDetail extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                children: [
-                  const SizedBox(height: 7),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        productModel.name!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              productModel.name!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                  size: 25,
+                                ),
+                                Text(
+                                  productModel.star.toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                            size: 25,
-                          ),
-                          Text(
-                            productModel.star.toString(),
+                        Row(
+                          children: [
+                            Text(
+                              r'($' '${productModel.price})',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5,),
+                        SizedBox(
+                          height: Get.height * .075,
+                          child: ReadMoreText(
+                            '${productModel.description!} ',
+                            trimLines: 2,
                             style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                            colorClickableText: Colors.pink,
+                            trimMode: TrimMode.Line,
+                            trimCollapsedText: 'Show more',
+                            trimExpandedText: 'Show less',
+                            lessStyle: TextStyle(
+                              fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              color: themeData.colorScheme.secondary,
+                            ),
+                            moreStyle: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: themeData.colorScheme.secondary,
                             ),
                           ),
-                        ],
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        r'($' '${productModel.price})',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    height: Get.height * .1,
-                    child: ReadMoreText(
-                      '${productModel.description!} ',
-                      trimLines: 2,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
-                      colorClickableText: Colors.pink,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: 'Show less',
-                      lessStyle: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: themeData.colorScheme.secondary,
-                      ),
-                      moreStyle: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: themeData.colorScheme.secondary,
-                      ),
+                      ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 15),
-                    child: Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ingredientContainer('assets/images/coffee_beans.png'),
@@ -192,28 +200,34 @@ class ProductDetail extends StatelessWidget {
                         ingredientContainer('assets/images/whiped_cream.png'),
                       ],
                     ),
-                  ),
-                  Row(
-                    children: const [
-                      Text(
-                        'Choose Size',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                    const SizedBox(),
+                    Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Text(
+                              'Choose Size',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  chooseSize(),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      increaseOrDecreaseAmount(),
-                      addToCard(),
-                    ],
-                  ),
-                ],
+                        const SizedBox(height: 5),
+                        chooseSize(),
+                      ],
+                    ),
+                    const SizedBox(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        increaseOrDecreaseAmount(),
+                        addToCard(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -238,7 +252,7 @@ class ProductDetail extends StatelessWidget {
         );
       },
       child: Container(
-        width: Get.width * .35,
+        width: Get.width * .45,
         height: 55,
         decoration: BoxDecoration(
             color: themeData.colorScheme.primary,
@@ -260,7 +274,7 @@ class ProductDetail extends StatelessWidget {
   SizedBox chooseSize() {
     return SizedBox(
       width: Get.width,
-      height: 30,
+      height: 35,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: productModel.sizes!.length,
@@ -306,8 +320,8 @@ class ProductDetail extends StatelessWidget {
 
   SizedBox increaseOrDecreaseAmount() {
     return SizedBox(
-      width: 100,
-      height: 35,
+      width: 120,
+      height: 40,
       child: Row(
         children: [
           Expanded(

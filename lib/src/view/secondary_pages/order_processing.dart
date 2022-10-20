@@ -16,8 +16,8 @@ class OrderProcessing extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                // color: Colors.red,
-                width: Get.width * .7,
+                width: Get.width * .6,
+                margin: const EdgeInsets.only(left: 20),
                 child: Center(
                   child: Lottie.asset('assets/gif/processing.json'),
                 ),
@@ -28,7 +28,7 @@ class OrderProcessing extends StatelessWidget {
             'Your order is processing',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 18,
             ),
           )
         ],

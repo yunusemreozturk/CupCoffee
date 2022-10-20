@@ -7,7 +7,8 @@ import 'package:lottie/lottie.dart';
 import '../../viewmodel/firestore_viewmodel.dart';
 
 class OrderConfirmed extends StatelessWidget {
-  const OrderConfirmed({Key? key}) : super(key: key);
+  OrderConfirmed({Key? key}) : super(key: key);
+  final FirestoreViewModel _viewModel = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,6 @@ class OrderConfirmed extends StatelessWidget {
                 child: Center(
                   child: Lottie.asset(
                     'assets/gif/ordered.json',
-                    animate: false,
                   ),
                 ),
               ),
@@ -39,13 +39,12 @@ class OrderConfirmed extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
+              _viewModel.payingState = Paying.idle;
+
               Get.offAll(
                 () => BottomNavigator(),
                 transition: Transition.fadeIn,
               );
-
-              final FirestoreViewModel viewModel = Get.find();
-              viewModel.payingState = Paying.idle;
             },
             child: Text(
               'back to the homepage',
