@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData themeData = ThemeData(
-  //todo: doesn't work
   fontFamily: GoogleFonts.poppins().fontFamily,
   primarySwatch: const MaterialColor(4281421381, {
     50: Color(0xffeff5f3),

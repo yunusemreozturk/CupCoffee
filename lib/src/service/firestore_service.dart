@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupcoffee/src/models/basket_model.dart';
+import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
@@ -12,7 +13,7 @@ class FirestoreService {
   @override
   Future<ProductsModel> getProducts() async {
     try {
-      return ProductsModel.fromMap(
+      return ProductsModel.fromJson(
           await _firestore.collection('products').doc('tr').get());
     } catch (e) {
       print('Error: FirestoreService(getProducts): ${e.toString()}');
@@ -23,7 +24,7 @@ class FirestoreService {
   @override
   Future<ShopsModel> getShops() async {
     try {
-      return ShopsModel.fromMap(
+      return ShopsModel.fromJson(
           await _firestore.collection('shops').doc('tr').get());
     } catch (e) {
       print('Error: FirestoreService(getShops): ${e.toString()}');
@@ -94,6 +95,8 @@ class FirestoreService {
       return OrdersModel.fromJson(await _firestore
           .collection('users')
           .doc('si0PVF7DXKklNExU1dDY')
+          .collection('user_info')
+          .doc('orders')
           .get());
     } catch (e) {
       print('Error: FirestoreService(getOrders): ${e.toString()}');
@@ -113,6 +116,36 @@ class FirestoreService {
       return ordersModel;
     } catch (e) {
       print('Error: FirestoreService(getOrders): ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<FavoritesModel?> getFavorites() async {
+    try {
+      return FavoritesModel.fromJson(await _firestore
+          .collection('users')
+          .doc('si0PVF7DXKklNExU1dDY')
+          .collection('user_info')
+          .doc('favorites')
+          .get());
+    } catch (e) {
+      print('Error: FirestoreService(getBasket): ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<FavoritesModel?> setFavorites(FavoritesModel favoritesModel) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('si0PVF7DXKklNExU1dDY')
+          .collection('user_info')
+          .doc('favorites')
+          .set(favoritesModel.toJson());
+
+      return favoritesModel;
+    } catch (e) {
+      print('Error: FirestoreService(setBasket): ${e.toString()}');
     }
   }
 }

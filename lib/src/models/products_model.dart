@@ -5,7 +5,7 @@ class ProductsModel {
 
   ProductsModel({this.products});
 
-  ProductsModel.fromMap(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  ProductsModel.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.data()?['products'] != null) {
       final v = snapshot.data()?['products'];
       final List<ProductModel> arr0 = [];

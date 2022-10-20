@@ -8,33 +8,34 @@ class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FlutterMap(
-          options: MapOptions(
-            center: LatLng(51.509364, -0.128928),
-            zoom: 16,
-          ),
-          children: [
-            TileLayer(
-              urlTemplate:
-              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.example.app',
+      body: SafeArea(
+        child: Center(
+          child: FlutterMap(
+            options: MapOptions(
+              center: LatLng(40.2230133,28.8590904),
+              zoom: 18,
             ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: LatLng(51.509364, -0.128928),
-                  builder: (BuildContext context) {
-                    return const Icon(
-                      Icons.location_on,
-                      size: 40,
-                      color: Colors.red,
-                    );
-                  },
-                )
-              ],
-            )
-          ],
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: LatLng(40.2230133,28.8590904),
+                    builder: (BuildContext context) {
+                      return const Icon(
+                        Icons.location_on,
+                        size: 40,
+                        color: Colors.red,
+                      );
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

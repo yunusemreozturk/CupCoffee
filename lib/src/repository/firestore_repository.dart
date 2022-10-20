@@ -1,3 +1,4 @@
+import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/models/user_model.dart';
 import 'package:cupcoffee/src/service/firestore_service.dart';
@@ -44,5 +45,15 @@ class FirestoreRepository {
   @override
   Future<OrdersModel?> setOrders(OrdersModel ordersModel) async {
     return await _service.setOrders(ordersModel);
+  }
+
+  @override
+  Future<FavoritesModel?> getFavorites() async {
+    return await _service.getFavorites();
+  }
+
+  @override
+  Future<FavoritesModel?> setFavorites(FavoritesModel favoritesModel) async {
+    return await _service.setFavorites(favoritesModel);
   }
 }

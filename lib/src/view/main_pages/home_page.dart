@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/view/main_pages/product_detail.dart';
 import 'package:cupcoffee/src/view/main_pages/shop_details.dart';
@@ -11,10 +12,12 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:like_button/like_button.dart';
 
 import '../../config/custom_icons_icons.dart';
 import '../../config/theme.dart';
 import '../../models/products_model.dart';
+import '../../widgets/favorite_button.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -232,22 +235,7 @@ class HomePage extends StatelessWidget {
                 Positioned(
                   top: 3,
                   right: 3,
-                  child: Container(
-                    width: 35,
-                    height: 35,
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(.5),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: Colors.white,
-                        size: 25,
-                      ),
-                    ),
-                  ),
+                  child: FavoriteButton(productModel: product),
                 ),
                 Positioned(
                   bottom: 6,

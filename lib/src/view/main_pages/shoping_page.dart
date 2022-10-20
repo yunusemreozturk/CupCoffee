@@ -379,7 +379,6 @@ class _ShopingPageState extends State<ShopingPage> {
     return Bounceable(
       onTap: () async {
         if (_viewModel.basketModel!.basket!.isNotEmpty) {
-          Get.back();
           await _viewModel.payNow(context);
         } else {
           Get.snackbar(

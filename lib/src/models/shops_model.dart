@@ -5,7 +5,7 @@ class ShopsModel {
 
   ShopsModel({this.shops});
 
-  ShopsModel.fromMap(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  ShopsModel.fromJson(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.data()?['shops'] != null) {
       final v = snapshot.data()?['shops'];
       final List<ShopModel> arr0 = [];

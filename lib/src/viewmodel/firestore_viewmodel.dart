@@ -1,4 +1,5 @@
 import 'package:cupcoffee/src/models/basket_model.dart';
+import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/repository/firestore_repository.dart';
@@ -19,6 +20,7 @@ class FirestoreViewModel extends GetxController {
   Rx<UserModel> _userModel = UserModel().obs;
   OrdersModel? ordersModel = OrdersModel(orders: []);
   BasketModel? basketModel = BasketModel(basket: []);
+  Rx<FavoritesModel?> favoritesModel = FavoritesModel(favorites: []).obs;
 
   Rx<FirestoreViewModelState> _state = FirestoreViewModelState.idle.obs;
   Rx<Paying> _payingState = Paying.idle.obs;
@@ -37,7 +39,6 @@ class FirestoreViewModel extends GetxController {
     _payingState.value = value;
   }
 
-
   @override
   void onInit() async {
     await getProducts();
@@ -45,6 +46,7 @@ class FirestoreViewModel extends GetxController {
     await getUser();
     await getBasket();
     await getOrders();
+    await getFavorites();
 
     super.onInit();
   }
@@ -126,6 +128,7 @@ class FirestoreViewModel extends GetxController {
 
   Future<void> payNow(context) async {
     try {
+      Get.back();
       _payingState.value = Paying.processing;
 
       basketModel?.basket?.forEach((element) {
@@ -144,6 +147,8 @@ class FirestoreViewModel extends GetxController {
       await setUser(userModel);
       await setOrders(ordersModel!);
       await Future.delayed(const Duration(seconds: 1));
+    } catch (e) {
+      print('Error: FirestoreViewModel(payNow): ${e.toString()}');
     } finally {
       _payingState.value = Paying.confirmed;
     }
@@ -212,6 +217,58 @@ class FirestoreViewModel extends GetxController {
       return ordersModel;
     } finally {
       _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<FavoritesModel?> getFavorites() async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      favoritesModel.value = (await _repository.getFavorites())!;
+
+      return favoritesModel.value;
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<FavoritesModel?> addFavorites(ProductModel favorite) async {
+    try {
+      if (favoritesModel.value!.favorites!.isEmpty) {
+        favoritesModel.value!.favorites!.add(favorite);
+      } else {
+        bool tempBool = false;
+
+        for (var map in favoritesModel.value!.favorites!) {
+          if (map.toJson()['productId'] == favorite.id) {
+            tempBool = true;
+          }
+        }
+
+        if (!tempBool) {
+          favoritesModel.value!.favorites!.add(favorite);
+        }
+      }
+
+      favoritesModel.value =
+          (await _repository.setFavorites(favoritesModel.value!))!;
+
+      return favoritesModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(addFavorites): ${e.toString()}');
+    }
+  }
+
+  Future<FavoritesModel?> deleteFavorites(ProductModel favorite) async {
+    try {
+      favoritesModel.value!.favorites!
+          .removeWhere((element) => element.id == favorite.id);
+
+      favoritesModel.value =
+          (await _repository.setFavorites(favoritesModel.value!))!;
+
+      return favoritesModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(addFavorites): ${e.toString()}');
     }
   }
 }
