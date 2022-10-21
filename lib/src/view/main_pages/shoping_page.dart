@@ -84,8 +84,6 @@ class _ShopingPageState extends State<ShopingPage> {
     );
   }
 
-
-
   Container addressContainer() {
     return Container(
       width: Get.width * .9,
@@ -97,13 +95,13 @@ class _ShopingPageState extends State<ShopingPage> {
           color: Colors.black,
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -118,7 +116,7 @@ class _ShopingPageState extends State<ShopingPage> {
                 ),
                 Bounceable(
                   scaleFactor: .7,
-                  onTap: () {  },
+                  onTap: () {},
                   child: Container(
                     width: 40,
                     height: 40,
@@ -136,23 +134,24 @@ class _ShopingPageState extends State<ShopingPage> {
                 )
               ],
             ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              addressItem(
-                'Middle road Sediago',
-                '201, sector 25, Centre Park, New Delhi, India',
-                Icon(
-                  Icons.sports_soccer,
-                  color: themeData.colorScheme.secondary,
-                  size: 26,
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                addressItem(
+                  'Middle road Sediago',
+                  '201, sector 25, Centre Park, New Delhi, India',
+                  Icon(
+                    Icons.sports_soccer,
+                    color: themeData.colorScheme.secondary,
+                    size: 26,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -172,14 +171,17 @@ class _ShopingPageState extends State<ShopingPage> {
               Text(
                 title,
                 style:
-                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey,
+              Container(
+                width: Get.width * .5,
+                child: Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey,
+                  ),
                 ),
               )
             ],
@@ -374,7 +376,8 @@ class _ShopingPageState extends State<ShopingPage> {
             subtotal += element.price!.toInt() * element.amount!;
           });
 
-          totalPrice = (subtotal == 0) ? 0 : subtotal + delivery - discount.value;
+          totalPrice =
+              (subtotal == 0) ? 0 : subtotal + delivery - discount.value;
 
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
