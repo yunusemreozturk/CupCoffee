@@ -51,6 +51,7 @@ class FirestoreViewModel extends GetxController {
     await getBasket();
     await getOrders();
     await getFavorites();
+    await getReservations();
 
     super.onInit();
   }

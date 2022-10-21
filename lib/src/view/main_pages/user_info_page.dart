@@ -96,7 +96,7 @@ class UserInfoPage extends StatelessWidget {
   Widget tabView2() {
     List<ReservationModel>? reservations =
         _viewModel.reservationsModel.reservations!.reversed.toList();
-    if (reservations!.isEmpty) {
+    if (reservations.isEmpty) {
       return const Center(child: Text('You do not have a reservation yet.'));
     } else {
       return ListView.builder(
