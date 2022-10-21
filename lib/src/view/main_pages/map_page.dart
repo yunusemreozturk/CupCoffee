@@ -1,11 +1,54 @@
+import 'package:cupcoffee/src/viewmodel/firestore_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../config/theme.dart';
 
-class MapPage extends StatelessWidget {
-  const MapPage({Key? key}) : super(key: key);
+class MapPage extends StatefulWidget {
+  MapPage({Key? key}) : super(key: key);
+
+  @override
+  State<MapPage> createState() => _MapPageState();
+}
+
+class _MapPageState extends State<MapPage> {
+  final FirestoreViewModel _viewModel = Get.find();
+  List<Marker> markersList = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _viewModel.shopsModel.shops!.forEach((element) {
+      markersList.add(
+        Marker(
+            point: LatLng(
+                element.coordinate!.latitude, element.coordinate!.longitude),
+            builder: (BuildContext context) {
+              return const Icon(
+                Icons.location_on,
+                size: 40,
+                color: Colors.blue,
+              );
+            }),
+      );
+    });
+
+    markersList.add(
+      Marker(
+        point: LatLng(40.2230133, 28.8590904),
+        builder: (BuildContext context) {
+          return const Icon(
+            Icons.location_on,
+            size: 40,
+            color: Colors.red,
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +71,7 @@ class MapPage extends StatelessWidget {
         child: Center(
           child: FlutterMap(
             options: MapOptions(
-              center: LatLng(40.2230133,28.8590904),
+              center: LatLng(40.2230133, 28.8590904),
               zoom: 18,
             ),
             children: [
@@ -37,18 +80,7 @@ class MapPage extends StatelessWidget {
                 userAgentPackageName: 'com.example.app',
               ),
               MarkerLayer(
-                markers: [
-                  Marker(
-                    point: LatLng(40.2230133,28.8590904),
-                    builder: (BuildContext context) {
-                      return const Icon(
-                        Icons.location_on,
-                        size: 40,
-                        color: Colors.red,
-                      );
-                    },
-                  )
-                ],
+                markers: markersList,
               )
             ],
           ),
