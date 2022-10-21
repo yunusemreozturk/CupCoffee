@@ -56,4 +56,8 @@ class FirestoreRepository {
   Future<FavoritesModel?> setFavorites(FavoritesModel favoritesModel) async {
     return await _service.setFavorites(favoritesModel);
   }
+
+  Future<int?> checkCouponCodes(String coupon) async {
+    return await _service.checkCouponCodes(coupon);
+  }
 }

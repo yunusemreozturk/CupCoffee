@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:vertical_tab_bar_view/vertical_tab_bar_view.dart';
 
 import '../../viewmodel/firestore_viewmodel.dart';
+import '../../widgets/my_grid_view.dart';
 
 class ViewProducts extends StatefulWidget {
   final ShopModel shopModel;
@@ -24,6 +25,7 @@ class ViewProducts extends StatefulWidget {
 class _ViewProductsState extends State<ViewProducts> {
   final FirestoreViewModel _viewModel = Get.find();
   List<ProductModel> products = [];
+  List<Widget> productList = [];
 
   @override
   void initState() {
@@ -36,90 +38,10 @@ class _ViewProductsState extends State<ViewProducts> {
     });
 
     products = products.reversed.toList();
-  }
 
-  Bounceable productCard({
-    required ProductModel product,
-  }) {
-    return Bounceable(
-      onTap: () {
-        Get.to(
-          () => ProductDetail(productModel: product),
-          transition: Transition.downToUp,
-          duration: const Duration(milliseconds: 300),
-        );
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            height: Get.height * .25,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: CachedNetworkImage(
-              imageUrl: product.photo!,
-              imageBuilder: (context, imageProvider) => Container(
-                width: Get.width * .45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.fill,
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 3.0,
-                      spreadRadius: 0.2,
-                      offset: Offset(2.0, 4.0),
-                    )
-                  ],
-                ),
-              ),
-              placeholder: (context, url) => Center(
-                child: SpinKitThreeBounce(
-                  size: 50,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: index.isEven ? Colors.white : Colors.brown,
-                        shape: BoxShape.circle,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 4, top: 5),
-            child: Row(
-              children: [
-                Text(
-                  product.name!,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Row(
-              children: [
-                Text(
-                  r'$ ' + product.price.toString(),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    products.forEach((element) {
+      productList.add(productCard(product: element));
+    });
   }
 
   @override
@@ -201,24 +123,106 @@ class _ViewProductsState extends State<ViewProducts> {
           ),
         ),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 17,
-
-              childAspectRatio: 0.55,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: MyGridView(
+              columnLength: 2,
+              children: productList,
             ),
-            itemCount: products.length,
-            itemBuilder: (BuildContext context, int index) {
-              return productCard(
-                product: products[index],
-              );
-            },
           ),
         ),
       ],
+    );
+  }
+
+  Padding productCard({
+    required ProductModel product,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 13),
+      child: Bounceable(
+        onTap: () {
+          Get.to(
+            () => ProductDetail(productModel: product),
+            transition: Transition.downToUp,
+            duration: const Duration(milliseconds: 300),
+          );
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: Get.height * .25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: product.photo!,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: Get.width * .43,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.fill,
+                    ),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 3.0,
+                        spreadRadius: 0.2,
+                        offset: Offset(2.0, 4.0),
+                      )
+                    ],
+                  ),
+                ),
+                placeholder: (context, url) => Center(
+                  child: SpinKitThreeBounce(
+                    size: 50,
+                    itemBuilder: (BuildContext context, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index.isEven ? Colors.white : Colors.brown,
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 4, top: 10),
+              child: Row(
+                children: [
+                  Text(
+                    product.name!,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 4),
+              child: Row(
+                children: [
+                  Text(
+                    r'$ ' + product.price.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -313,12 +317,13 @@ class _ViewProductsState extends State<ViewProducts> {
                         ),
                       ),
                     ),
-                    Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.chevron_right,
-                          size: 40,
-                        )),
+                    const Expanded(
+                      flex: 1,
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 40,
+                      ),
+                    ),
                   ],
                 ),
               ),

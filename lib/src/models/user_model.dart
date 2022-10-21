@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cupcoffee/src/models/orders_model.dart';
 
 class UserModel {
   String? id;

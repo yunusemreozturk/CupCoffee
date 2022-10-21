@@ -4,10 +4,6 @@ import 'package:flutter/services.dart';
 
 import 'src/app.dart';
 
-//todo: kupon kodu
-//todo: türkçe ekle
-//todo: hata yakalamaları yap
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

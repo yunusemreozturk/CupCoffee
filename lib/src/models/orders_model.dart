@@ -38,7 +38,8 @@ class OrderModel {
   int? id;
   int? amount;
   int? size;
-  int? price;
+  double? price;
+  int? couponDiscount;
 
   OrderModel({this.id, this.amount, this.size, this.price});
 
@@ -46,7 +47,8 @@ class OrderModel {
     id = json['productId']?.toInt();
     amount = json['amount']?.toInt();
     size = json['sizes'];
-    price = json['price']?.toInt();
+    price = json['price']?.toDouble();
+    couponDiscount = json['couponDiscount']?.toDouble();
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +57,7 @@ class OrderModel {
       if (amount != null) 'amount': amount,
       if (size != null) 'sizes': size,
       if (price != null) 'price': price,
+      if (couponDiscount != null) 'couponDiscount': couponDiscount,
     };
   }
 }

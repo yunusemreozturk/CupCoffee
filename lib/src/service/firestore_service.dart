@@ -5,6 +5,7 @@ import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 
+import '../models/coupon_model.dart';
 import '../models/user_model.dart';
 
 class FirestoreService {
@@ -146,6 +147,24 @@ class FirestoreService {
       return favoritesModel;
     } catch (e) {
       print('Error: FirestoreService(setBasket): ${e.toString()}');
+    }
+  }
+
+  Future<int?> checkCouponCodes(String coupon) async {
+    try {
+      final couponsModel = CouponsModel.fromJson(
+          await _firestore.collection('coupon_codes').doc('tr').get());
+      int? temp;
+
+      couponsModel.coupons!.forEach((element) {
+        if (element.code == coupon) {
+          temp = element.discountAmount!;
+        }
+      });
+
+      return temp;
+    } catch (e) {
+      print('Error: FirestoreService(checkCouponCodes): ${e.toString()}');
     }
   }
 }

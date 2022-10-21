@@ -40,8 +40,8 @@ class ProductModel {
   String? name;
   String? description;
   String? photo;
-  int? price;
-  int? star;
+  double? price;
+  double? star;
   List? sizes;
   int? deliveryTime;
   String? location;
@@ -65,8 +65,8 @@ class ProductModel {
     name = json['name']?.toString();
     description = json['description'];
     photo = json['photo']?.toString();
-    price = json['price'];
-    star = json['star'];
+    price = json['price'].toDouble();
+    star = json['star'].toDouble();
     sizes = json['sizes'];
     deliveryTime = json['deliveryTime'];
     location = json['location']?.toString();

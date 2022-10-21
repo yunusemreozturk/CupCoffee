@@ -24,11 +24,13 @@ class ShopingPage extends StatefulWidget {
 
 class _ShopingPageState extends State<ShopingPage> {
   final FirestoreViewModel _viewModel = Get.find();
+  final controller = TextEditingController();
 
   int subtotal = 0;
-  int discount = 90;
+  RxInt discount = 0.obs;
   int delivery = 50;
   int totalPrice = 0;
+  String? couponCode;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,7 @@ class _ShopingPageState extends State<ShopingPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               orders(),
+              coupon(),
               calculatePrice(),
               payNow(context),
             ],
@@ -81,37 +84,7 @@ class _ShopingPageState extends State<ShopingPage> {
     );
   }
 
-  Container addressCard(String title, String subtitle, Icon icon) {
-    return Container(
-      height: Get.height * .1,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          icon,
-          const SizedBox(width: 7),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey,
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Container addressContainer() {
     return Container(
@@ -134,7 +107,7 @@ class _ShopingPageState extends State<ShopingPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addressCard(
+                addressItem(
                   _viewModel.userModel.address!['title'],
                   _viewModel.userModel.address!['full_address'],
                   Icon(
@@ -143,18 +116,22 @@ class _ShopingPageState extends State<ShopingPage> {
                     size: 28,
                   ),
                 ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: themeData.colorScheme.secondary.withOpacity(.2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    Icons.border_color,
-                    size: 20,
-                    color: themeData.colorScheme.secondary,
+                Bounceable(
+                  scaleFactor: .7,
+                  onTap: () {  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    margin: const EdgeInsets.only(right: 10),
+                    decoration: BoxDecoration(
+                      color: themeData.colorScheme.secondary.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.border_color,
+                      size: 20,
+                      color: themeData.colorScheme.secondary,
+                    ),
                   ),
                 )
               ],
@@ -164,7 +141,7 @@ class _ShopingPageState extends State<ShopingPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              addressCard(
+              addressItem(
                 'Middle road Sediago',
                 '201, sector 25, Centre Park, New Delhi, India',
                 Icon(
@@ -173,6 +150,38 @@ class _ShopingPageState extends State<ShopingPage> {
                   size: 26,
                 ),
               ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container addressItem(String title, String subtitle, Icon icon) {
+    return Container(
+      height: Get.height * .1,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          icon,
+          const SizedBox(width: 7),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style:
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.grey,
+                ),
+              )
             ],
           ),
         ],
@@ -283,15 +292,68 @@ class _ShopingPageState extends State<ShopingPage> {
     }
   }
 
+  //turkticaret yazarsanız $300 indirim kazanırsınız
+  Container coupon() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      width: Get.width,
+      height: Get.height * .13,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Enter promotion code',
+              suffixIcon: Bounceable(
+                onTap: checkCouponCode,
+                child: const Icon(Icons.check),
+              ),
+              hintStyle: const TextStyle(fontWeight: FontWeight.bold),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void checkCouponCode() async {
+    couponCode = controller.value.text;
+
+    if (couponCode != null) {
+      couponCode!.trim().toLowerCase();
+      int? res = await _viewModel.checkCouponCodes(couponCode!);
+
+      if (res != null) {
+        discount.value = res;
+        Get.snackbar(
+          'Successful',
+          'Coupon applied.',
+          backgroundColor: themeData.colorScheme.secondary,
+          colorText: Colors.white,
+        );
+      } else {
+        discount.value = 0;
+        Get.snackbar(
+          'Warning',
+          'No such coupon code was found.',
+          backgroundColor: themeData.colorScheme.secondary,
+          colorText: Colors.white,
+        );
+      }
+    }
+  }
+
   Container calculatePrice() {
-    subtotal = 0;
-    _viewModel.basketModel?.basket?.forEach((element) {
-      subtotal += element.price! * element.amount!;
-    });
-
-    totalPrice = (subtotal == 0) ? 0 : subtotal - discount + delivery;
-    print(totalPrice);
-
     TextStyle textStyle1 =
         const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     TextStyle textStyle2 =
@@ -304,79 +366,91 @@ class _ShopingPageState extends State<ShopingPage> {
         borderRadius: BorderRadius.circular(25),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Obx(
+        () {
+          discount.value;
+          subtotal = 0;
+          _viewModel.basketModel?.basket?.forEach((element) {
+            subtotal += element.price!.toInt() * element.amount!;
+          });
+
+          totalPrice = (subtotal == 0) ? 0 : subtotal + delivery - discount.value;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Selected',
-                style: textStyle1,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Selected',
+                    style: textStyle1,
+                  ),
+                  Text(
+                    _viewModel.basketModel!.basket!.length.toString(),
+                    style: textStyle1,
+                  )
+                ],
               ),
-              Text(
-                _viewModel.basketModel!.basket!.length.toString(),
-                style: textStyle1,
-              )
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Subtotal',
+                    style: textStyle1,
+                  ),
+                  Text(
+                    r'$' + subtotal.toString(),
+                    style: textStyle1,
+                  ),
+                ],
+              ),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Discount',
+                    style: textStyle1,
+                  ),
+                  Text(
+                    r'$' + discount.toString(),
+                    style: textStyle1,
+                  ),
+                ],
+              ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Delivery',
+                    style: textStyle1,
+                  ),
+                  Text(
+                    r'$' + delivery.toString(),
+                    style: textStyle1,
+                  ),
+                ],
+              ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total',
+                    style: textStyle2,
+                  ),
+                  Text(
+                    r'$' + totalPrice.toString(),
+                    style: textStyle2,
+                  ),
+                ],
+              ),
             ],
-          ),
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Subtotal',
-                style: textStyle1,
-              ),
-              Text(
-                r'$' + subtotal.toString(),
-                style: textStyle1,
-              ),
-            ],
-          ),
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Discount',
-                style: textStyle1,
-              ),
-              Text(
-                r'$' + discount.toString(),
-                style: textStyle1,
-              ),
-            ],
-          ),
-          const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Delivery',
-                style: textStyle1,
-              ),
-              Text(
-                r'$' + delivery.toString(),
-                style: textStyle1,
-              ),
-            ],
-          ),
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total',
-                style: textStyle2,
-              ),
-              Text(
-                r'$' + totalPrice.toString(),
-                style: textStyle2,
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -459,6 +533,7 @@ class _ShopingPageState extends State<ShopingPage> {
                     colorText: Colors.white,
                   );
                 }
+                //todo: getx ile yap
                 setState(() {});
 
                 await _viewModel.setBasket(_viewModel.basketModel!);

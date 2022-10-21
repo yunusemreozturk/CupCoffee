@@ -46,7 +46,6 @@ class UserInfoPage extends StatelessWidget {
     return Expanded(
       flex: 4,
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Past Orders',
@@ -127,7 +126,7 @@ class UserInfoPage extends StatelessWidget {
                       subtitle: Text(order.amount.toString()),
                       trailing: Text(
                         r'$ ' '${order.amount! * order.price!}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),

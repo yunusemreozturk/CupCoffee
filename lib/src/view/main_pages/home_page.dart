@@ -324,11 +324,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Text(
-                        product.price.toString(),
+                        r'$' + product.price.toString(),
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: 16,
                         ),
                       ),
                     ],
@@ -355,12 +355,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Padding nearestCoffeeShops() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20),
-      child: Column(
-        children: [
-          Row(
+  Column nearestCoffeeShops() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -383,22 +383,22 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: Get.height * .3,
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              itemCount: _viewModel.shopsModel.shops!.length,
-              itemBuilder: (BuildContext context, int index) {
-                ShopModel shop = _viewModel.shopsModel.shops![index];
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: Get.height * .3,
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: _viewModel.shopsModel.shops!.length,
+            itemBuilder: (BuildContext context, int index) {
+              ShopModel shop = _viewModel.shopsModel.shops![index];
 
-                return shopCard(shop);
-              },
-            ),
+              return shopCard(shop);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -410,7 +410,7 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         height: Get.height * .25,
         width: Get.width * .46,
-        padding: const EdgeInsets.only(right: 10),
+        padding: const EdgeInsets.only(left: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

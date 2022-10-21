@@ -51,23 +51,27 @@ class FirestoreViewModel extends GetxController {
     super.onInit();
   }
 
-  Future<ProductsModel> getProducts() async {
+  Future<ProductsModel?> getProducts() async {
     try {
       _state.value = FirestoreViewModelState.busy;
       _productsModel.value = await _repository.getProducts();
 
       return _productsModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getProducts): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
   }
 
-  Future<ShopsModel> getShops() async {
+  Future<ShopsModel?> getShops() async {
     try {
       _state.value = FirestoreViewModelState.busy;
       _shopsModel.value = await _repository.getShops();
 
       return _shopsModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getShops): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -120,6 +124,8 @@ class FirestoreViewModel extends GetxController {
           );
         }
       }
+    } catch (e) {
+      print('Error: FirestoreViewModel(addToBasket): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
       await setBasket(basketModel!);
@@ -133,7 +139,7 @@ class FirestoreViewModel extends GetxController {
 
       basketModel?.basket?.forEach((element) {
         int credit = userModel.credit!;
-        credit -= element.price! * element.amount!;
+        credit -= element.price!.toInt() * element.amount!;
         userModel.credit = credit;
       });
 
@@ -154,23 +160,27 @@ class FirestoreViewModel extends GetxController {
     }
   }
 
-  Future<UserModel> getUser() async {
+  Future<UserModel?> getUser() async {
     try {
       _state.value = FirestoreViewModelState.busy;
       _userModel.value = (await _repository.getUser())!;
 
       return _userModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getUser): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
   }
 
-  Future<UserModel> setUser(UserModel userModel) async {
+  Future<UserModel?> setUser(UserModel userModel) async {
     try {
       _state.value = FirestoreViewModelState.busy;
       _userModel.value = await _repository.setUser(userModel);
 
       return _userModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(setUser): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.busy;
     }
@@ -182,6 +192,8 @@ class FirestoreViewModel extends GetxController {
       basketModel = (await _repository.getBasket())!;
 
       return basketModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getBasket): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -193,6 +205,8 @@ class FirestoreViewModel extends GetxController {
       basketModel = (await _repository.setBasket(basket))!;
 
       return basketModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(setBasket): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -204,6 +218,8 @@ class FirestoreViewModel extends GetxController {
       ordersModel = (await _repository.getOrders())!;
 
       return ordersModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getOrders): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -215,6 +231,8 @@ class FirestoreViewModel extends GetxController {
       ordersModel = await _repository.setOrders(orders);
 
       return ordersModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(setOrders): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -226,6 +244,8 @@ class FirestoreViewModel extends GetxController {
       favoritesModel.value = (await _repository.getFavorites())!;
 
       return favoritesModel.value;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getFavorites): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }
@@ -269,6 +289,14 @@ class FirestoreViewModel extends GetxController {
       return favoritesModel.value;
     } catch (e) {
       print('Error: FirestoreViewModel(addFavorites): ${e.toString()}');
+    }
+  }
+
+  Future<int?> checkCouponCodes(String coupon) async {
+    try {
+      return await _repository.checkCouponCodes(coupon);
+    } catch (e) {
+      print('Error: FirestoreViewModel(checkCouponCodes): ${e.toString()}');
     }
   }
 }
