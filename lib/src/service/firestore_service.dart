@@ -3,6 +3,7 @@ import 'package:cupcoffee/src/models/basket_model.dart';
 import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
+import 'package:cupcoffee/src/models/reservation_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 
 import '../models/coupon_model.dart';
@@ -165,6 +166,37 @@ class FirestoreService {
       return temp;
     } catch (e) {
       print('Error: FirestoreService(checkCouponCodes): ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<ReservationsModel?> getReservations() async {
+    try {
+      return ReservationsModel.fromJson(await _firestore
+          .collection('users')
+          .doc('si0PVF7DXKklNExU1dDY')
+          .collection('user_info')
+          .doc('reservations')
+          .get());
+    } catch (e) {
+      print('Error: FirestoreService(getReservations): ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<ReservationsModel?> setReservations(
+      ReservationsModel reservationsModel) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc('si0PVF7DXKklNExU1dDY')
+          .collection('user_info')
+          .doc('reservations')
+          .set(reservationsModel.toJson());
+
+      return reservationsModel;
+    } catch (e) {
+      print('Error: FirestoreService(setReservations): ${e.toString()}');
     }
   }
 }

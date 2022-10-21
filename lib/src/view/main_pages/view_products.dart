@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cupcoffee/src/config/theme.dart';
 import 'package:cupcoffee/src/models/products_model.dart';
+import 'package:cupcoffee/src/models/reservation_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/view/main_pages/product_detail.dart';
 import 'package:cupcoffee/src/widgets/custom_app_bar.dart';
@@ -259,77 +260,89 @@ class _ViewProductsState extends State<ViewProducts> {
             backgroundColor: themeData.scaffoldBackgroundColor,
             elevation: 0,
           ),
-          Bounceable(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Container(
-                height: Get.height * .17,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 3.0,
-                      spreadRadius: 0.2,
-                      offset: Offset(2.0, 4.0),
-                    )
-                  ],
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/reserve.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
+          reservation()
+        ],
+      ),
+    );
+  }
+
+  Bounceable reservation() {
+    return Bounceable(
+      onTap: () async {
+        await _viewModel.setReservations(
+          ReservationModel(
+            shopId: widget.shopModel.id,
+            shopName: widget.shopModel.name,
+            dateTime: DateTime.now().add(const Duration(days: 1)),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Container(
+          height: Get.height * .17,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 3.0,
+                spreadRadius: 0.2,
+                offset: Offset(2.0, 4.0),
+              )
+            ],
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/reserve.png'),
+                      fit: BoxFit.fill,
                     ),
-                    Expanded(
-                      flex: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'Reseve a table now',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                              ),
-                            ),
-                            Text(
-                              'Lorem ipsum dolor sit amet, cons ectetur adipiscing elit.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.chevron_right,
-                        size: 40,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Reseve a table now',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                      ),
+                      Text(
+                        'Lorem ipsum dolor sit amet, cons ectetur adipiscing elit.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const Expanded(
+                flex: 1,
+                child: Icon(
+                  Icons.chevron_right,
+                  size: 40,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

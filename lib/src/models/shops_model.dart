@@ -44,16 +44,15 @@ class ShopModel {
   String? distance;
   GeoPoint? coordinate;
 
-  ShopModel.fromJson(Map<String, dynamic> json) {
-    id = json['shopId']?.toInt();
-    name = json['name']?.toString();
-    description = json['description'];
-    subtitle = json['subtitle'];
-    photo = json['photo']?.toString();
-    star = json['star'];
-    distance = json['distance'];
-    coordinate = json['coordinate'];
-  }
+  ShopModel.fromJson(Map<String, dynamic> json)
+      : id = json['shopId']?.toInt(),
+        name = json['name']?.toString(),
+        description = json['description'],
+        subtitle = json['subtitle'],
+        photo = json['photo']?.toString(),
+        star = json['star'],
+        distance = json['distance'],
+        coordinate = json['coordinate'];
 
   Map<String, dynamic> toJson() {
     return {

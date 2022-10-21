@@ -1,10 +1,13 @@
 import 'package:cupcoffee/src/models/basket_model.dart';
 import 'package:cupcoffee/src/models/favorites_model.dart';
 import 'package:cupcoffee/src/models/orders_model.dart';
+import 'package:cupcoffee/src/models/reservation_model.dart';
 import 'package:cupcoffee/src/models/shops_model.dart';
 import 'package:cupcoffee/src/repository/firestore_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../config/theme.dart';
 import '../models/products_model.dart';
 import '../models/user_model.dart';
 
@@ -21,6 +24,7 @@ class FirestoreViewModel extends GetxController {
   OrdersModel? ordersModel = OrdersModel(orders: []);
   BasketModel? basketModel = BasketModel(basket: []);
   Rx<FavoritesModel?> favoritesModel = FavoritesModel(favorites: []).obs;
+  ReservationsModel reservationsModel = ReservationsModel(reservations: []);
 
   Rx<FirestoreViewModelState> _state = FirestoreViewModelState.idle.obs;
   Rx<Paying> _payingState = Paying.idle.obs;
@@ -233,6 +237,71 @@ class FirestoreViewModel extends GetxController {
       return ordersModel;
     } catch (e) {
       print('Error: FirestoreViewModel(setOrders): ${e.toString()}');
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<ReservationsModel?> getReservations() async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+      reservationsModel = (await _repository.getReservations())!;
+
+      return reservationsModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(getOrders): ${e.toString()}');
+    } finally {
+      _state.value = FirestoreViewModelState.idle;
+    }
+  }
+
+  Future<ReservationsModel?> setReservations(
+      ReservationModel reservation) async {
+    try {
+      _state.value = FirestoreViewModelState.busy;
+
+      if (reservationsModel.reservations!.isEmpty) {
+        reservationsModel.reservations!.add(reservation);
+        Get.snackbar(
+          'Successful',
+          'Reservation received.',
+          backgroundColor: themeData.colorScheme.secondary,
+          colorText: Colors.white,
+        );
+
+        reservationsModel =
+            (await _repository.setReservations(reservationsModel))!;
+      } else {
+        bool tempBool = true;
+
+        reservationsModel.reservations!.forEach((element) {
+          if (element.shopId == reservation.shopId) {
+            tempBool = false;
+            Get.snackbar(
+              'Unsuccessful',
+              'You already have a reservation.',
+              backgroundColor: themeData.colorScheme.secondary,
+              colorText: Colors.white,
+            );
+          }
+        });
+
+        if (tempBool) {
+          reservationsModel.reservations!.add(reservation);
+          Get.snackbar(
+            'Successful',
+            'Reservation received.',
+            backgroundColor: themeData.colorScheme.secondary,
+            colorText: Colors.white,
+          );
+
+          reservationsModel =
+              (await _repository.setReservations(reservationsModel))!;
+        }
+      }
+      return reservationsModel;
+    } catch (e) {
+      print('Error: FirestoreViewModel(setReservations): ${e.toString()}');
     } finally {
       _state.value = FirestoreViewModelState.idle;
     }

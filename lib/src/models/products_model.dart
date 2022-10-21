@@ -59,18 +59,17 @@ class ProductModel {
     this.location,
   });
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
-    shopId = json['shopId']?.toInt();
-    id = json['productId']?.toInt();
-    name = json['name']?.toString();
-    description = json['description'];
-    photo = json['photo']?.toString();
-    price = json['price'].toDouble();
-    star = json['star'].toDouble();
-    sizes = json['sizes'];
-    deliveryTime = json['deliveryTime'];
-    location = json['location']?.toString();
-  }
+  ProductModel.fromJson(Map<String, dynamic> json)
+      : shopId = json['shopId']?.toInt(),
+        id = json['productId']?.toInt(),
+        name = json['name']?.toString(),
+        description = json['description'],
+        photo = json['photo']?.toString(),
+        price = json['price'].toDouble(),
+        star = json['star'].toDouble(),
+        sizes = json['sizes'],
+        deliveryTime = json['deliveryTime'],
+        location = json['location']?.toString();
 
   Map<String, dynamic> toJson() {
     return {

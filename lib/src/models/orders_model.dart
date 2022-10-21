@@ -43,13 +43,12 @@ class OrderModel {
 
   OrderModel({this.id, this.amount, this.size, this.price});
 
-  OrderModel.fromJson(Map<String, dynamic> json) {
-    id = json['productId']?.toInt();
-    amount = json['amount']?.toInt();
-    size = json['sizes'];
-    price = json['price']?.toDouble();
-    couponDiscount = json['couponDiscount']?.toDouble();
-  }
+  OrderModel.fromJson(Map<String, dynamic> json)
+      : id = json['productId']?.toInt(),
+        amount = json['amount']?.toInt(),
+        size = json['sizes'],
+        price = json['price']?.toDouble(),
+        couponDiscount = json['couponDiscount']?.toDouble();
 
   Map<String, dynamic> toJson() {
     return {
